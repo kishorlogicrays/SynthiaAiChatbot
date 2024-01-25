@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const openAiApiKey = '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';
+const openAiApiKey = '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';
 
 const chatgptUrl = 'https://api.openai.com/v1/chat/completions';
 const dalleUrl = 'https://api.openai.com/v1/images/generations';

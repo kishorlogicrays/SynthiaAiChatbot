@@ -78,6 +78,7 @@ const Home = (props: any) => {
         <HeaderProfile />
         <View style={styles.flatContainer}>
           <FlatList
+            showsVerticalScrollIndicator={false}
             data={features}
             renderItem={({item, index}) => <Card data={item} />}
             numColumns={2}

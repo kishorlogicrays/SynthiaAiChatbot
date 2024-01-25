@@ -10,6 +10,9 @@ export const COLORS = {
   white: '#FFFFFF',
   black: '#000000',
   lightWhite: '#e1e1e1',
+  danger: '#F44336',
+  secondary: '#4A4E51',
+  border: '#f19c12',
 };
 
 export const SCREEN_HEIGHT = Dimensions.get('screen').height;

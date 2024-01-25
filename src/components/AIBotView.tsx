@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {COLORS, FONT, images} from '../constants';
 import {
@@ -6,17 +6,22 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
 
 const AIBotView = () => {
   const navigation: any = useNavigation();
   return (
     <View style={styles.container}>
       <Text style={styles.greetingText}>Welcome Back!</Text>
-      <TouchableOpacity onPress={() => navigation?.navigate('ChatScreen')}>
-        <Image
-          source={images.logo}
+      <TouchableOpacity
+        style={styles.animation}
+        activeOpacity={1}
+        onPress={() => navigation?.navigate('ChatScreen')}>
+        <LottieView
+          source={images.aiChatbot}
+          autoPlay
+          loop
           style={styles.logoContainer}
-          resizeMode="contain"
         />
       </TouchableOpacity>
       <Text
@@ -44,8 +49,10 @@ const styles = StyleSheet.create({
     fontFamily: FONT.notoSansMedium,
     color: '#8a848e',
   },
+  animation: {padding: wp(5)},
   logoContainer: {
     height: hp(30),
+    width: hp(30),
   },
 });
 

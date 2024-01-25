@@ -1,46 +1,46 @@
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {globalStyle} from '../styles/globalStyle';
 import {COLORS, FONT, images} from '../constants';
-import {SCREEN_WIDTH} from '../constants/theme';
+import LottieView from 'lottie-react-native';
 import {useNavigation} from '@react-navigation/native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {storeValueInAsync} from '../utils/AsyncStorage';
 
 const Welcome = () => {
   const navigation = useNavigation();
+
   return (
     <View style={[globalStyle.container, styles.container]}>
       {/* Heading container */}
       <View style={styles.headingContainer}>
         <Text style={styles.headingText}>Synthia AI</Text>
-        <Text style={styles.childText}>The future by here, powered by AI</Text>
+        <Text style={styles.childText}>
+          {`The future by here, powered by AI.\nSynthia AI understands you, providing tailored solutions and insights.`}
+        </Text>
       </View>
 
       {/* Logo container */}
       <View>
-        <Image source={images.logo} style={styles.logo} resizeMode="cover" />
+        <LottieView
+          source={images.aiChatbot}
+          autoPlay
+          loop
+          style={styles.logo}
+        />
       </View>
 
       {/* Button Container */}
       <TouchableOpacity
         style={styles.buttonContainer}
-        activeOpacity={0.6}
-        onPress={() =>
+        activeOpacity={0.9}
+        onPress={async () => {
+          await storeValueInAsync('checkIntro', true);
           navigation.reset({
             index: 0,
-            routes: [{name: 'Main'}],
-          })
-        }>
+            routes: [{name: 'Login'}],
+          });
+        }}>
         <Text style={[styles.headingText, {fontSize: 17}]}>Get Started</Text>
       </TouchableOpacity>
     </View>
@@ -66,12 +66,12 @@ const styles = StyleSheet.create({
     marginTop: wp(3),
   },
   logo: {
-    marginTop: wp(30),
+    marginTop: wp(16),
     height: wp(84),
     width: wp(84),
   },
   buttonContainer: {
-    marginTop: wp(15),
+    marginTop: wp(30),
     height: wp(12),
     width: wp(80),
     borderRadius: 10,

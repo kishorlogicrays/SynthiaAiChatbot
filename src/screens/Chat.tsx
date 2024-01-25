@@ -124,7 +124,6 @@ const Chat = () => {
   };
 
   const renderInput = (props: any) => {
-    console.log('text =-==', props?.text.trim());
     return (
       <InputToolbar
         textInputStyle={{color: '#fff'}}

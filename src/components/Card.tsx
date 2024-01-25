@@ -27,7 +27,6 @@ const Card = (props: IProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
     backgroundColor: COLORS.cards,
     flex: 1,
     marginHorizontal: wp(1.3),

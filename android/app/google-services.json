@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "167193606353",
+    "project_id": "synthiaaichatbot",
+    "storage_bucket": "synthiaaichatbot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167193606353:android:dc6f8c11b61a20717aedf0",
+        "android_client_info": {
+          "package_name": "com.synthiaaichatbot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsc5HkmOQnU9mYm2RWcfo-7CPeLFp_dM0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
