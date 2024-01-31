@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.notoSansMedium,
     color: COLORS.white,
     marginTop: wp(3),
+    marginHorizontal: wp(3),
   },
   logo: {
     marginTop: wp(16),

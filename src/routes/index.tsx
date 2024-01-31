@@ -10,6 +10,7 @@ import Login from '../screens/Login';
 import {getValueInAsync} from '../utils/AsyncStorage';
 import useAppContext from '../context/useAppContext';
 import SignUp from '../screens/SignUp';
+import NavigationService from './NavigationService';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,7 +40,18 @@ const index = () => {
   if (initializing) return null;
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      ref={NavigationService.navigationRef}
+      onReady={() => {
+        NavigationService.isReadyRef.current = true;
+        NavigationService.routeNameRef.current =
+          NavigationService.navigationRef.current.getCurrentRoute().name;
+      }}
+      onStateChange={() => {
+        const currentRouteName =
+          NavigationService.navigationRef.current.getCurrentRoute().name;
+        NavigationService.routeNameRef.current = currentRouteName;
+      }}>
       <Stack.Navigator
         screenOptions={() => ({
           headerShown: false,

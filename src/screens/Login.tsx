@@ -12,6 +12,7 @@ import {Formik} from 'formik';
 import InputText from '../components/InputText';
 import SubmitButton from '../components/SubmitButton';
 import {useNavigation} from '@react-navigation/native';
+import useAppContext from '../context/useAppContext';
 
 export interface IToggle {
   loading: boolean;
@@ -29,6 +30,7 @@ let loginValidation = object({
 });
 
 const Login = () => {
+  const {loginUser}: any = useAppContext();
   const navigation: any = useNavigation();
   const emailRef: any = useRef();
   const passwordRef: any = useRef();
@@ -42,6 +44,12 @@ const Login = () => {
       loading: true,
       isClick: true,
     });
+    const {user} = await loginUser(values?.email, values?.password);
+    if (user?.uid)
+      navigation?.reset({
+        index: 0,
+        routes: [{name: 'Main'}],
+      });
   };
 
   return (
@@ -83,13 +91,17 @@ const Login = () => {
               isSecure={false}
               onBlurInput={handleBlur('email')}
               onChange={handleChange('email')}
-              values={values?.email}
+              values={values?.email.toLowerCase()}
               isError={touched.email && errors.email}
               isEditable={!handleToggle?.loading}
             />
-            {touched.email && errors.email && (
+            {touched.email && errors.email ? (
               <View style={styles.errorContainer}>
                 <Text style={styles.errorText}>{errors.email}</Text>
+              </View>
+            ) : (
+              <View style={styles.errorContainer}>
+                <Text></Text>
               </View>
             )}
 
@@ -105,9 +117,13 @@ const Login = () => {
               isError={touched.password && errors.password}
               isEditable={!handleToggle?.loading}
             />
-            {touched.password && errors.password && (
+            {touched.password && errors.password ? (
               <View style={styles.errorContainer}>
                 <Text style={styles.errorText}>{errors.password}</Text>
+              </View>
+            ) : (
+              <View style={styles.errorContainer}>
+                <Text></Text>
               </View>
             )}
           </View>
@@ -176,7 +192,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.notoSansRegular,
   },
   userInputContainer: {
-    marginTop: wp(8),
+    marginTop: wp(5),
   },
   signUpText: {
     textAlign: 'center',

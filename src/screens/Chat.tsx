@@ -51,10 +51,10 @@ const Chat = () => {
   };
 
   const onSend = useCallback(async (messages: any) => {
+    inputRef?.current?.clear();
     setMessages((previousMessages: any) =>
       GiftedChat.append(previousMessages, messages),
     );
-    inputRef?.current?.clear();
     setIsTyping(true);
     const userMessage = messages[0].text;
     const gptResponse = await getChatGPTResponse(userMessage);

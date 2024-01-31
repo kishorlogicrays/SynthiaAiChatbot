@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const openAiApiKey = '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';
+const openAiApiKey = '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';
 
 const chatgptUrl = 'https://api.openai.com/v1/chat/completions';
 const dalleUrl = 'https://api.openai.com/v1/images/generations';
@@ -12,7 +12,7 @@ export const getChatGPTResponse = async (inputText: any) => {
       {
         model: 'gpt-3.5-turbo',
         messages: [{role: 'user', content: inputText}],
-        max_tokens: 1,
+        max_tokens: 150,
         temperature: 0.7,
       },
       {
