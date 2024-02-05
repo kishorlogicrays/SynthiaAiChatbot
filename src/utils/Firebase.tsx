@@ -1,6 +1,8 @@
 import auth, {firebase} from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import PushNotification from 'react-native-push-notification';
 import {Platform} from 'react-native';
 
 const firebaseAuth: any = auth();
@@ -9,11 +11,22 @@ const dbStorage: any = storage();
 
 const USERS: string = 'users';
 const PROFILE: string = 'profile';
+const CHAT: string = 'generalChat';
+const ART: string = 'artChat';
+const CODE: string = 'codeChat';
 
 /**
  * Returns a user identifier as specified by the authentication provider.
  */
 export const getAuthUserId = () => firebaseAuth.currentUser?.uid;
+
+/**
+ * get FCM token
+ */
+export const getFCMToken = async () => {
+  const fcmToken = await messaging().getToken();
+  return fcmToken;
+};
 
 /**
  * Returns document's identifier within its users collection.
@@ -73,7 +86,10 @@ export const signUpWithEmailPassword = (email: string, password: string) => {
   });
 };
 
-export const signInWithEmailPassword = (email: string, password: string) => {
+export const signInWithEmailPassword = async (
+  email: string,
+  password: string,
+) => {
   return new Promise((resolve, reject) => {
     firebaseAuth
       .signInWithEmailAndPassword(email, password)
@@ -84,6 +100,81 @@ export const signInWithEmailPassword = (email: string, password: string) => {
         console.log('Error while login -', error);
         reject(error);
       });
+  });
+};
+
+export const getUserData = async (userId: any) => {
+  const currentUserId = await getAuthUserId();
+  const userDetails = await db
+    .collection(USERS)
+    .doc(userId ? userId : currentUserId)
+    .get();
+
+  return userDetails;
+};
+
+export const storeChatCommunication = async (
+  chatMessage: any,
+  type = 'generalChat',
+) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const findType =
+        type === 'generalChat'
+          ? CHAT
+          : type === 'Art'
+          ? ART
+          : type === 'Code'
+          ? CODE
+          : CHAT;
+      const currentUserId = await getAuthUserId();
+      const queryMessage = await db
+        .collection(findType)
+        .doc(`${currentUserId}-AI`);
+      await queryMessage.set({
+        chat_id: `${currentUserId}-AI`,
+        last_message: chatMessage?.text
+          ? chatMessage?.text
+          : chatMessage?.image,
+        createdAt: JSON.stringify(chatMessage?.createdAt),
+        user_name: chatMessage?.user?.name,
+      });
+      const newCollection = await queryMessage
+        .collection(`${currentUserId}-AI`)
+        .add({
+          ...chatMessage,
+          createdAt: JSON.stringify(chatMessage?.createdAt),
+        });
+      resolve(newCollection);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const getChatCollection = async (type = 'generalChat') => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const findType =
+        type === 'generalChat'
+          ? CHAT
+          : type === 'Art'
+          ? ART
+          : type === 'Code'
+          ? CODE
+          : CHAT;
+      const currentUserId = await getAuthUserId();
+      const queryMessage = await db
+        .collection(findType)
+        .doc(`${currentUserId}-AI`)
+        .collection(`${currentUserId}-AI`)
+        .orderBy('createdAt', 'desc')
+        .get()
+        .then((querySnapshot: any) => {
+          return querySnapshot?._docs;
+        });
+      resolve(queryMessage);
+    } catch (error) {}
   });
 };
 
@@ -108,9 +199,21 @@ export const uploadImage = async (userId: any, imgResponse: any) => {
   });
 };
 
+export const initFirebase = () => {
+  messaging().onMessage(localNotifications);
+  messaging()
+    .getInitialNotification()
+    .then(notificationOpen => {
+      if (notificationOpen) {
+        console.log(notificationOpen);
+      }
+    });
+};
+
 export const createUser = async (userCollection: any, confirmation: any) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const fcmToken = await getFCMToken();
       const url: string =
         userCollection?.userImageUrl &&
         (await uploadImage(
@@ -120,7 +223,7 @@ export const createUser = async (userCollection: any, confirmation: any) => {
       await db
         .collection(USERS)
         .doc(confirmation?.user?.uid)
-        .set({...userCollection, userImageUrl: url})
+        .set({...userCollection, userImageUrl: url, fcmToken: fcmToken})
         .then((response: any) => resolve(response))
         .catch((err: any) => {
           reject(err);
@@ -129,6 +232,22 @@ export const createUser = async (userCollection: any, confirmation: any) => {
       reject(error);
     }
   });
+};
+
+export const setCollectionData = async (
+  storeData: any,
+  collectionName: string,
+  docName?: any,
+) => {
+  try {
+    const currentUserId = await getAuthUserId();
+    await db
+      .collection(collectionName)
+      .doc(docName ? docName : currentUserId)
+      .update(storeData);
+  } catch (error) {
+    console.log('Error while to update document', error);
+  }
 };
 
 /**
@@ -172,6 +291,70 @@ export const logoutUser = () => {
         console.log(err);
         reject(err);
       });
+  });
+};
+
+/**
+ * Push-notification set-up
+ */
+PushNotification.createChannel(
+  {
+    channelId: 'Synthia AI Chat',
+    channelName: 'Synthia AI Chat channel',
+    channelDescription: 'A channel to categories your notifications',
+    playSound: true,
+    importance: 4,
+    vibrate: true,
+  },
+  (created: any) => console.log(`createChannel returned '${created}'`),
+);
+
+PushNotification.configure({
+  onRegister: function (token: any) {
+    console.log('TOKEN:', token);
+  },
+  onNotification: function (notification: any) {
+    console.log('NOTIFICATION ------:', notification);
+    // notification.finish(PushNotificationIOS.FetchResult.NoData);
+  },
+  onAction: function (notification: any) {
+    console.log('ACTION:', notification.action);
+    console.log('NOTIFICATION:', notification);
+  },
+  onRegistrationError: function (err: any) {
+    console.error(err.message, err);
+  },
+  permissions: {
+    alert: true,
+    badge: true,
+    sound: true,
+  },
+  popInitialNotification: true,
+  requestPermissions: true,
+});
+
+export const localNotifications = (remoteMessage: any) => {
+  const {notification, data, messageId} = remoteMessage;
+
+  PushNotification.localNotification({
+    channelId: 'Synthia AI Chat',
+    largeIcon: '',
+    smallIcon: notification?.android?.smallIcon,
+    bigPictureUrl: notification.imageUrl,
+    bigText: notification.body || '',
+    subText: notification.title,
+    title: notification.title,
+    message: notification.body || '',
+    userInfo: data,
+    messageId,
+    priority: 'high',
+    importance: 'high',
+    visibility: 'public',
+    allowWhileIdle: true,
+    invokeApp: false,
+    ignoreInForeground: false,
+    usesChronometer: true,
+    vibration: 300,
   });
 };
 

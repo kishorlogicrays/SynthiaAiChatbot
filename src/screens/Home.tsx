@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {globalStyle} from '../styles/globalStyle';
 import HeaderProfile from '../components/HeaderProfile';
@@ -6,6 +6,7 @@ import AIBotView from '../components/AIBotView';
 import TitleHeader from '../components/TitleHeader';
 import Card from '../components/Card';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import useAppContext from '../context/useAppContext';
 
 const features = [
   {
@@ -72,6 +73,12 @@ const features = [
 ];
 
 const Home = (props: any) => {
+  const {fetchCurrentUserData}: any = useAppContext();
+
+  useEffect(() => {
+    fetchCurrentUserData();
+  }, []);
+
   return (
     <View style={[globalStyle.container]}>
       <View style={styles.modalContainer}>

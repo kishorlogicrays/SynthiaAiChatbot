@@ -1,31 +1,31 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {COLORS, FONT} from '../constants/theme';
-import Octicons from 'react-native-vector-icons/Octicons';
+import {COLORS} from '../constants/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import useAppContext from '../context/useAppContext';
+import {images} from '../constants';
 
 const HeaderProfile = () => {
+  const {authUser}: any = useAppContext();
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          source={{
-            uri: 'https://lh3.googleusercontent.com/a/AEdFTp6iAHlssoknpqM6HakGnp5vughnxSAIhksmwlly=k-s256',
-          }}
+          source={
+            authUser?.userImageUrl
+              ? {
+                  uri: authUser?.userImageUrl,
+                }
+              : images.userLogo
+          }
           resizeMode="cover"
           style={styles.headerImage}
         />
-      </View>
-
-      <View style={styles.middleContainer}>
-        <TouchableOpacity style={styles.inviteButton}>
-          <Octicons name={'plus'} size={wp(4)} color={COLORS.white} />
-          <Text style={styles.invite}>Invite</Text>
-        </TouchableOpacity>
       </View>
 
       <View style={styles.sideContainer}>
@@ -63,25 +63,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.white,
     marginStart: wp(2),
   },
-  middleContainer: {
-    flex: 2,
-    justifyContent: 'center',
-  },
-  inviteButton: {
-    borderRadius: wp(10),
-    maxWidth: hp(18),
-    height: hp(5),
-    backgroundColor: '#444547',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-  },
-  invite: {
-    color: COLORS.white,
-    fontSize: wp(3.6),
-    fontFamily: FONT.notoSansRegular,
-  },
+
   sideContainer: {
     flex: 1,
   },

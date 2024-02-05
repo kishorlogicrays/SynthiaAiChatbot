@@ -3,15 +3,19 @@ import React from 'react';
 import {COLORS, FONT} from '../constants';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {useNavigation} from '@react-navigation/native';
 
 interface IProps {
   data: {};
 }
 
 const Card = (props: IProps) => {
+  const navigation: any = useNavigation();
   const {data}: any = props;
   return (
-    <TouchableOpacity onPress={() => {}} style={styles.container}>
+    <TouchableOpacity
+      onPress={() => navigation?.navigate('ChatScreen', {aiType: data?.title})}
+      style={styles.container}>
       <View style={styles.imageContainer}>
         <MaterialCommunityIcons
           name={data?.image}

@@ -6,6 +6,8 @@ import {
   requestMultiple,
   RESULTS,
 } from 'react-native-permissions';
+import messaging from '@react-native-firebase/messaging';
+import {initFirebase} from './Firebase';
 
 export const checkMicrophonePermission = async () => {
   try {
@@ -122,6 +124,47 @@ export const requestStoragePermission = async () => {
   }
 };
 
+export const checkPushPermission = async () => {
+  try {
+    const pushPermissionCheck = await check(
+      PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
+    );
+
+    if (pushPermissionCheck === RESULTS.GRANTED) {
+      return pushPermissionCheck;
+    } else {
+      await requestPushPermission();
+    }
+  } catch (error) {
+    console.error('Error checking Gallery permission:', error);
+    return false;
+  }
+};
+
+export const requestPushPermission = async () => {
+  try {
+    const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    initFirebase();
+
+    if (result === RESULTS.GRANTED || enabled) {
+      return result;
+    } else {
+      Alert.alert(
+        'Sythia AI Chat',
+        'We need notification permission for send messages and other information.',
+      );
+    }
+  } catch (error) {
+    console.error('Error requesting microphone permission:', error);
+    return false;
+  }
+};
+
 export const requestMultiplePermissions = async () => {
   const permissions = await requestMultiple(
     Platform.OS === 'ios'
@@ -134,6 +177,7 @@ export const requestMultiplePermissions = async () => {
           PERMISSIONS.ANDROID.RECORD_AUDIO,
           PERMISSIONS.ANDROID.CAMERA,
           PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
+          PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
         ],
   );
 
@@ -149,8 +193,15 @@ export const requestMultiplePermissions = async () => {
     Platform.OS === 'ios'
       ? permissions['ios.permission.MEDIA_LIBRARY'] === RESULTS.GRANTED
       : permissions['android.permission.READ_MEDIA_IMAGES'] === RESULTS.GRANTED;
+  const pushPermission =
+    permissions['android.permission.POST_NOTIFICATIONS'] === RESULTS.GRANTED;
 
-  if (audioRecPermission && cameraPermission && storagePermission) {
+  if (
+    audioRecPermission &&
+    cameraPermission &&
+    storagePermission &&
+    pushPermission
+  ) {
     return true;
   }
 };

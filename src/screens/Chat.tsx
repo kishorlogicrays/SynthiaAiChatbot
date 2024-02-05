@@ -3,18 +3,35 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {globalStyle} from '../styles/globalStyle';
 import ChatHeader from '../components/ChatHeader';
 import {GiftedChat, InputToolbar} from 'react-native-gifted-chat';
-import {getChatGPTResponse} from '../configs';
+import {getChatGPTResponse, imageArtGeneration} from '../configs';
 import {COLORS, FONT} from '../constants';
 import Voice from '@react-native-voice/voice';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {requestMicrophonePermission} from '../utils/AskPermission';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import useAppContext from '../context/useAppContext';
 
-const Chat = () => {
+const Chat = (props: any) => {
+  const {storeChat, authUser, getChatCollectionData}: any = useAppContext();
   const inputRef: any = useRef();
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<any>([]);
   const [isOnMic, setIsOnMic] = useState(false);
+
+  useEffect(() => {
+    const data = async () => {
+      const chatData = await getChatCollectionData(
+        props?.route?.params?.aiType
+          ? props?.route?.params?.aiType
+          : 'generalChat',
+      );
+      chatData?.map((singleChat: any) => {
+        singleChat.createdAt = JSON.parse(singleChat.createdAt);
+      });
+      setMessages(chatData);
+    };
+    data();
+  }, []);
 
   useEffect(() => {
     Voice.onSpeechStart = onSpeechStartHandler;
@@ -48,6 +65,7 @@ const Chat = () => {
 
   const onSpeechErrorHandler = (e: any) => {
     console.log('Speech error handler', e);
+    setIsOnMic(false);
   };
 
   const onSend = useCallback(async (messages: any) => {
@@ -56,23 +74,40 @@ const Chat = () => {
       GiftedChat.append(previousMessages, messages),
     );
     setIsTyping(true);
+    await storeChat(
+      messages[0],
+      props?.route?.params?.aiType
+        ? props?.route?.params?.aiType
+        : 'generalChat',
+    );
     const userMessage = messages[0].text;
-    const gptResponse = await getChatGPTResponse(userMessage);
+    const gptResponse: any =
+      props?.route?.params?.aiType === 'Art'
+        ? await imageArtGeneration(userMessage)
+        : await getChatGPTResponse(userMessage);
 
-    setMessages((previousMessages: any) =>
-      GiftedChat.append(previousMessages, [
-        {
-          _id: Math.random(),
-          text: gptResponse,
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: 'ChatGPT',
-            avatar:
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf_jxvmlHQ4r4ful-PsH6MRHOAm6T6sskKZQ&usqp=CAU',
-          },
-        },
-      ]),
+    const responseObject = {
+      _id: Math.random(),
+      ...(props?.route?.params?.aiType === 'Art' && {
+        image: gptResponse?.data[0]?.url,
+      }),
+      ...(props?.route?.params?.aiType == undefined && {text: gptResponse}),
+      createdAt: new Date(),
+      user: {
+        _id: '2',
+        name: 'ChatGPT',
+        avatar:
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf_jxvmlHQ4r4ful-PsH6MRHOAm6T6sskKZQ&usqp=CAU',
+      },
+    };
+    await setMessages((previousMessages: any) =>
+      GiftedChat.append(previousMessages, [responseObject]),
+    );
+    await storeChat(
+      responseObject,
+      props?.route?.params?.aiType
+        ? props?.route?.params?.aiType
+        : 'generalChat',
     );
     setIsTyping(false);
   }, []);
@@ -157,6 +192,8 @@ const Chat = () => {
                     text: props?.text.trim(),
                     user: {
                       _id: 1,
+                      avatar: authUser?.userImageUrl,
+                      name: authUser?.email,
                     },
                   },
                 ])
@@ -187,6 +224,8 @@ const Chat = () => {
           messages={messages}
           user={{
             _id: 1,
+            avatar: authUser?.userImageUrl,
+            name: authUser?.email,
           }}
           alwaysShowSend={true}
           isTyping={isTyping}
@@ -198,6 +237,7 @@ const Chat = () => {
           scrollToBottom={true}
           scrollToBottomComponent={customDownButton}
           renderInputToolbar={(props: any) => renderInput(props)}
+          isLoadingEarlier={true}
           renderChatEmpty={(props: any) => <RenderEmpty {...props} />}
         />
       </View>

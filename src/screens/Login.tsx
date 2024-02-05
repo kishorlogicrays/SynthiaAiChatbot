@@ -13,6 +13,9 @@ import InputText from '../components/InputText';
 import SubmitButton from '../components/SubmitButton';
 import {useNavigation} from '@react-navigation/native';
 import useAppContext from '../context/useAppContext';
+import {getFCMToken, setCollectionData} from '../utils/Firebase';
+
+const USERS: string = 'users';
 
 export interface IToggle {
   loading: boolean;
@@ -44,12 +47,15 @@ const Login = () => {
       loading: true,
       isClick: true,
     });
+    const fcmToken = await getFCMToken();
     const {user} = await loginUser(values?.email, values?.password);
-    if (user?.uid)
+    await setCollectionData({fcmToken: fcmToken}, USERS);
+    if (user?.uid) {
       navigation?.reset({
         index: 0,
         routes: [{name: 'Main'}],
       });
+    }
   };
 
   return (
