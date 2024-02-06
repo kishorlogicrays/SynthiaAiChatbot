@@ -1,4 +1,9 @@
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {globalStyle} from '../styles/globalStyle';
 import ChatHeader from '../components/ChatHeader';
@@ -17,9 +22,11 @@ const Chat = (props: any) => {
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<any>([]);
   const [isOnMic, setIsOnMic] = useState(false);
+  const [isLoader, setIsLoader] = useState(false);
 
   useEffect(() => {
     const data = async () => {
+      setIsLoader(true);
       const chatData = await getChatCollectionData(
         props?.route?.params?.aiType
           ? props?.route?.params?.aiType
@@ -29,6 +36,7 @@ const Chat = (props: any) => {
         singleChat.createdAt = JSON.parse(singleChat.createdAt);
       });
       setMessages(chatData);
+      setIsLoader(false);
     };
     data();
   }, []);
@@ -58,6 +66,8 @@ const Chat = (props: any) => {
         text: e.value[0],
         user: {
           _id: 1,
+          avatar: authUser?.userImageUrl,
+          name: authUser?.email,
         },
       },
     ]);
@@ -84,7 +94,7 @@ const Chat = (props: any) => {
     const gptResponse: any =
       props?.route?.params?.aiType === 'Art'
         ? await imageArtGeneration(userMessage)
-        : await getChatGPTResponse(userMessage);
+        : await getChatGPTResponse(userMessage, 10);
 
     const responseObject = {
       _id: Math.random(),
@@ -120,7 +130,7 @@ const Chat = (props: any) => {
           justifyContent: 'center',
           alignContent: 'center',
         }}>
-        <Text style={styles.emptyText}>How can I help you today?</Text>
+        {isLoader && <ActivityIndicator color={COLORS.white} size={'small'} />}
       </View>
     );
   };
