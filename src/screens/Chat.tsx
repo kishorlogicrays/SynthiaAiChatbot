@@ -232,7 +232,9 @@ const Chat = (props: any) => {
 
   return (
     <View style={globalStyle.container}>
-      <ChatHeader />
+      <ChatHeader
+        title={props?.route?.params?.aiType ? props?.route?.params?.aiType : ''}
+      />
       <View style={styles.messageContainer}>
         <GiftedChat
           textInputRef={inputRef}

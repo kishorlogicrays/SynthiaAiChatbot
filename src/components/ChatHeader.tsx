@@ -8,7 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {COLORS, FONT} from '../constants';
 import {useNavigation} from '@react-navigation/native';
 
-const ChatHeader = () => {
+const ChatHeader = ({title}: any) => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -22,7 +22,7 @@ const ChatHeader = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.titleContainer}>
-        <Text style={styles.heading}>Synthia</Text>
+        <Text style={styles.heading}>Synthia {title}</Text>
       </View>
       <View style={styles.backContainer}>
         <TouchableOpacity>
