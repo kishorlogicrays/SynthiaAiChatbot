@@ -17,7 +17,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import useAppContext from '../context/useAppContext';
 
 const Chat = (props: any) => {
-  const {storeChat, authUser, getChatCollectionData}: any = useAppContext();
+  const {storeChat, authUser, getChatCollectionData, aiAPIKey}: any =
+    useAppContext();
   const inputRef: any = useRef();
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<any>([]);
@@ -93,15 +94,19 @@ const Chat = (props: any) => {
     const userMessage = messages[0].text;
     const gptResponse: any =
       props?.route?.params?.aiType === 'Art'
-        ? await imageArtGeneration(userMessage)
-        : await getChatGPTResponse(userMessage, 10);
+        ? await imageArtGeneration(aiAPIKey, userMessage)
+        : await getChatGPTResponse(
+            aiAPIKey,
+            props?.route?.params?.aiType,
+            userMessage,
+          );
 
     const responseObject = {
       _id: Math.random(),
       ...(props?.route?.params?.aiType === 'Art' && {
         image: gptResponse?.data[0]?.url,
       }),
-      ...(props?.route?.params?.aiType == undefined && {text: gptResponse}),
+      ...(props?.route?.params?.aiType != 'Art' && {text: gptResponse}),
       createdAt: new Date(),
       user: {
         _id: '2',

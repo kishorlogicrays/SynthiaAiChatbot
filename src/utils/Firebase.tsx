@@ -14,6 +14,12 @@ const PROFILE: string = 'profile';
 const CHAT: string = 'generalChat';
 const ART: string = 'artChat';
 const CODE: string = 'codeChat';
+const BOOKING: string = 'bookingChat';
+const CONTENT: string = 'contentChat';
+const HEALTH: string = 'healthChat';
+const TRANSLATE: string = 'translateChat';
+const MUSIC: string = 'musicChat';
+const MOVIES: string = 'moviesChat';
 
 /**
  * Returns a user identifier as specified by the authentication provider.
@@ -126,6 +132,18 @@ export const storeChatCommunication = async (
           ? ART
           : type === 'Code'
           ? CODE
+          : type === 'Booking'
+          ? BOOKING
+          : type === 'Content'
+          ? CONTENT
+          : type === 'Health'
+          ? HEALTH
+          : type === 'Translate'
+          ? TRANSLATE
+          : type === 'Music'
+          ? MUSIC
+          : type === 'Movies'
+          ? MOVIES
           : CHAT;
       const currentUserId = await getAuthUserId();
       const queryMessage = await db
@@ -162,6 +180,18 @@ export const getChatCollection = async (type = 'generalChat') => {
           ? ART
           : type === 'Code'
           ? CODE
+          : type === 'Booking'
+          ? BOOKING
+          : type === 'Content'
+          ? CONTENT
+          : type === 'Health'
+          ? HEALTH
+          : type === 'Translate'
+          ? TRANSLATE
+          : type === 'Music'
+          ? MUSIC
+          : type === 'Movies'
+          ? MOVIES
           : CHAT;
       const currentUserId = await getAuthUserId();
       const queryMessage = await db

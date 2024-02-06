@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import TabNavigation from './TabNavigator';
 import Chat from '../screens/Chat';
 import Welcome from '../screens/Welcome';
@@ -15,7 +16,7 @@ import NavigationService from './NavigationService';
 const Stack = createNativeStackNavigator();
 
 const index = () => {
-  const {setAuthUser}: any = useAppContext();
+  const {setAuthUser, setAiAPIKey}: any = useAppContext();
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const [isSeenIntro, setIsSeenIntro] = useState(false);
@@ -28,9 +29,17 @@ const index = () => {
 
   useEffect(() => {
     introValueCheck();
+    getAiAPIKey();
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
+
+  const getAiAPIKey = async () => {
+    const confirmationResponse: any = await firestore()
+      .collection('Config')
+      .get();
+    setAiAPIKey(confirmationResponse?._docs[0]?._data?.ChatGPT);
+  };
 
   const introValueCheck = async () => {
     const seeIntroOnce = await getValueInAsync('checkIntro');

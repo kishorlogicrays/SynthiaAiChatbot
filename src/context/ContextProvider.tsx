@@ -14,10 +14,13 @@ export const AppContext = createContext({});
 
 export const ContextProvider = ({children}: any) => {
   const [authUser, setAuthUser] = useState<any>();
+  const [aiAPIKey, setAiAPIKey] = useState<string>('');
 
   return (
     <AppContext.Provider
       value={{
+        aiAPIKey,
+        setAiAPIKey,
         authUser,
         setAuthUser,
         signUpUser: async (email: string, password: string) => {
