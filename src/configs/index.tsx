@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-// const openAiApiKey = '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';
-
 const chatgptUrl = 'https://api.openai.com/v1/chat/completions';
 const dallEUrl = 'https://api.openai.com/v1/images/generations';
 
@@ -11,6 +9,26 @@ export const getChatGPTResponse = async (
   inputText: any,
 ) => {
   try {
+    const messageMap: any = {
+      Code: 'Generate optimized code snippet for the following task: ',
+      Booking: 'Book a travel itinerary based on the details: ',
+      Content: 'Compose a compelling blog post on the topic: ',
+      Health: 'Provide practical health tips for a healthy lifestyle: ',
+      Translate: 'Translate the following sentence into another language: ',
+      Music: 'Create lyrics for a song inspired by: ',
+      Movies: 'Recommend must-watch movies related to: ',
+    };
+
+    const maxTokensMap: any = {
+      Code: 200,
+      Booking: 350,
+      Content: 625,
+      Health: 200,
+      Translate: 300,
+      Music: 200,
+      Movies: 150,
+    };
+
     const response = await axios.post(
       chatgptUrl,
       {
@@ -18,44 +36,10 @@ export const getChatGPTResponse = async (
         messages: [
           {
             role: 'user',
-            content:
-              type === undefined
-                ? inputText
-                : type === 'Code'
-                ? `Give me code : ${inputText}`
-                : type === 'Booking'
-                ? `Traveling/Booking details : ${inputText}`
-                : type === 'Content'
-                ? `Write the blog post : ${inputText}`
-                : type === 'Health'
-                ? `Give health tips : ${inputText}`
-                : type === 'Translate'
-                ? `Translate the sentence : ${inputText}`
-                : type === 'Music'
-                ? `Write song on : ${inputText}`
-                : type === 'Movies'
-                ? `Suggest movies : ${inputText}`
-                : inputText,
+            content: type ? `${messageMap[type]} : ${inputText}` : inputText,
           },
         ],
-        max_tokens:
-          type === undefined
-            ? 150
-            : type === 'Code'
-            ? 200
-            : type === 'Booking'
-            ? 350
-            : type === 'Content'
-            ? 625
-            : type === 'Health'
-            ? 200
-            : type === 'Translate'
-            ? 300
-            : type === 'Music'
-            ? 200
-            : type === 'Movies'
-            ? 150
-            : 150,
+        max_tokens: maxTokensMap[type] || 150,
         temperature: 0.7,
       },
       {
