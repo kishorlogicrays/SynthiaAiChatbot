@@ -269,6 +269,19 @@ export const createUser = async (userCollection: any, confirmation: any) => {
   });
 };
 
+export const updateUser = async (userDetails: any, userId: string) => {
+  try {
+    const url: string = userDetails?.userImageUrl?.uri
+      ? await uploadImage(userId, userDetails?.userImageUrl)
+      : '';
+    const docRef = db.collection(USERS).doc(userId);
+    const res = await docRef.update({...userDetails, userImageUrl: url});
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const setCollectionData = async (
   storeData: any,
   collectionName: string,

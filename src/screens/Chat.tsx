@@ -85,45 +85,76 @@ const Chat = (props: any) => {
       GiftedChat.append(previousMessages, messages),
     );
     setIsTyping(true);
-    await storeChat(
+    const userChat = await storeChat(
       messages[0],
       props?.route?.params?.aiType
         ? props?.route?.params?.aiType
         : 'generalChat',
     );
-    const userMessage = messages[0].text;
-    const gptResponse: any =
-      props?.route?.params?.aiType === 'Art'
-        ? await imageArtGeneration(aiAPIKey, userMessage)
-        : await getChatGPTResponse(
-            aiAPIKey,
-            props?.route?.params?.aiType,
-            userMessage,
-          );
+    if (userChat?.code) {
+      setIsTyping(false);
+    } else {
+      const userMessage = messages[0].text;
+      const gptResponse: any =
+        props?.route?.params?.aiType === 'Art'
+          ? await imageArtGeneration(aiAPIKey, userMessage)
+          : await getChatGPTResponse(
+              aiAPIKey,
+              props?.route?.params?.aiType,
+              userMessage,
+            );
 
-    const responseObject = {
-      _id: Math.random(),
-      ...(props?.route?.params?.aiType === 'Art' && {
-        image: gptResponse?.data[0]?.url,
-      }),
-      ...(props?.route?.params?.aiType != 'Art' && {text: gptResponse}),
-      createdAt: new Date(),
-      user: {
-        _id: '2',
-        name: 'ChatGPT',
-        avatar:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf_jxvmlHQ4r4ful-PsH6MRHOAm6T6sskKZQ&usqp=CAU',
-      },
-    };
-    await setMessages((previousMessages: any) =>
-      GiftedChat.append(previousMessages, [responseObject]),
-    );
-    await storeChat(
-      responseObject,
-      props?.route?.params?.aiType
-        ? props?.route?.params?.aiType
-        : 'generalChat',
-    );
+      const responseObject = {
+        _id: Math.random(),
+        ...(props?.route?.params?.aiType === 'Art' && {
+          image: gptResponse?.data[0]?.url,
+        }),
+        ...(props?.route?.params?.aiType != 'Art' && {text: gptResponse}),
+        createdAt: new Date(),
+        user: {
+          _id: '2',
+          name: 'ChatGPT',
+          avatar:
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf_jxvmlHQ4r4ful-PsH6MRHOAm6T6sskKZQ&usqp=CAU',
+        },
+      };
+      await setMessages((previousMessages: any) =>
+        GiftedChat.append(previousMessages, [responseObject]),
+      );
+
+      const chatGPTResponse = await storeChat(
+        responseObject,
+        props?.route?.params?.aiType
+          ? props?.route?.params?.aiType
+          : 'generalChat',
+      );
+      setIsTyping(false);
+    }
+    // const userMessage = messages[0].text;
+    // const gptResponse: any =
+    //   props?.route?.params?.aiType === 'Art'
+    //     ? await imageArtGeneration(aiAPIKey, userMessage)
+    //     : await getChatGPTResponse(
+    //         aiAPIKey,
+    //         props?.route?.params?.aiType,
+    //         userMessage,
+    //       );
+
+    // const responseObject = {
+    //   _id: Math.random(),
+    //   ...(props?.route?.params?.aiType === 'Art' && {
+    //     image: gptResponse?.data[0]?.url,
+    //   }),
+    //   ...(props?.route?.params?.aiType != 'Art' && {text: gptResponse}),
+    //   createdAt: new Date(),
+    //   user: {
+    //     _id: '2',
+    //     name: 'ChatGPT',
+    //     avatar:
+    //       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf_jxvmlHQ4r4ful-PsH6MRHOAm6T6sskKZQ&usqp=CAU',
+    //   },
+    // };
+
     setIsTyping(false);
   }, []);
 

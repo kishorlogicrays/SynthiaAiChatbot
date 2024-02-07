@@ -48,13 +48,19 @@ const Login = () => {
       isClick: true,
     });
     const fcmToken = await getFCMToken();
-    const {user} = await loginUser(values?.email, values?.password);
-    await setCollectionData({fcmToken: fcmToken}, USERS);
-    if (user?.uid) {
-      navigation?.reset({
-        index: 0,
-        routes: [{name: 'Main'}],
+    const confirmation = await loginUser(values?.email, values?.password);
+    if (confirmation?.code) {
+      setHandleToggle({
+        loading: false,
+        isClick: false,
       });
+    } else {
+      await setCollectionData({fcmToken: fcmToken}, USERS);
+      confirmation?.user?.uid &&
+        navigation?.reset({
+          index: 0,
+          routes: [{name: 'Main'}],
+        });
     }
   };
 

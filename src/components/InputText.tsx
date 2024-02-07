@@ -20,6 +20,7 @@ interface IPropsTypes {
   isMultiLine?: boolean;
   isError?: any;
   isEditable?: boolean;
+  customStyle?: string;
 }
 
 const InputText = ({
@@ -38,6 +39,7 @@ const InputText = ({
   isMultiLine,
   isError,
   isEditable,
+  customStyle,
 }: IPropsTypes) => {
   return (
     <View style={textContainer}>
@@ -48,6 +50,7 @@ const InputText = ({
           {
             borderColor: isError ? COLORS.danger : COLORS.secondary,
           },
+          customStyle,
         ]}
         placeholder={placeHolderText}
         autoFocus={isAutoFocus}

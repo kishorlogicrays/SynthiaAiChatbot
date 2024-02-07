@@ -36,6 +36,7 @@ export const ContextProvider = ({children}: any) => {
             handleAuthError(e, (message: any) => {
               Alert.alert('Synthia AI Chat', message);
             });
+            return e;
           }
         },
         loginUser: async (email: string, password: string) => {
@@ -46,6 +47,7 @@ export const ContextProvider = ({children}: any) => {
             handleAuthError(e, (message: any) => {
               Alert.alert('Synthia AI Chat', message);
             });
+            return e;
           }
         },
         fetchCurrentUserData: async () => {
@@ -56,6 +58,7 @@ export const ContextProvider = ({children}: any) => {
             handleAuthError(e, (message: any) => {
               Alert.alert('Synthia AI Chat', message);
             });
+            return e;
           }
         },
         storeChat: async (message: any, collectionType: string) => {
@@ -65,6 +68,7 @@ export const ContextProvider = ({children}: any) => {
             handleAuthError(e, (message: any) => {
               Alert.alert('Synthia AI Chat', message);
             });
+            return e;
           }
         },
         getChatCollectionData: async (collectionType: string) => {
@@ -73,7 +77,9 @@ export const ContextProvider = ({children}: any) => {
             return collectionData?.map((singleData: any) => {
               return singleData?._data;
             });
-          } catch (error) {}
+          } catch (e) {
+            return e;
+          }
         },
         sendResetLink: async (email: string) => {
           try {
@@ -82,6 +88,7 @@ export const ContextProvider = ({children}: any) => {
             handleAuthError(e, (message: any) => {
               Alert.alert('Synthia AI Chat', message);
             });
+            return e;
           }
         },
       }}>

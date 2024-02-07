@@ -98,15 +98,18 @@ const SignUp = () => {
     };
 
     const confirmation = await signUpUser(values?.email, values?.password);
-    await createUser(userCollection, confirmation);
-    navigation?.reset({
-      index: 0,
-      routes: [{name: 'Main'}],
-    });
-    setHandleToggle({
-      isClick: false,
-      loading: false,
-    });
+    if (confirmation.code) {
+      setHandleToggle({
+        isClick: false,
+        loading: false,
+      });
+    } else {
+      await createUser(userCollection, confirmation);
+      navigation?.reset({
+        index: 0,
+        routes: [{name: 'Main'}],
+      });
+    }
   };
 
   return (
