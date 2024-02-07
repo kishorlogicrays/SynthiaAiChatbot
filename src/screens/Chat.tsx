@@ -299,6 +299,10 @@ const styles = StyleSheet.create({
     borderRadius: wp(4.3),
     alignSelf: 'center',
   },
+  image: {
+    height: wp(30),
+    width: wp(60),
+  },
 });
 
 export default Chat;

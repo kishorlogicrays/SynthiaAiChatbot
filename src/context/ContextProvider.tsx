@@ -3,12 +3,14 @@ import {
   getChatCollection,
   getUserData,
   handleAuthError,
+  setPasswordResetLink,
   signInWithEmailPassword,
   signUpWithEmailPassword,
   storeChatCommunication,
 } from '../utils/Firebase';
 import NavigationService from '../routes/NavigationService';
 import {Alert} from 'react-native';
+import {firebase} from '@react-native-firebase/auth';
 
 export const AppContext = createContext({});
 
@@ -72,6 +74,15 @@ export const ContextProvider = ({children}: any) => {
               return singleData?._data;
             });
           } catch (error) {}
+        },
+        sendResetLink: async (email: string) => {
+          try {
+            await firebase.auth().sendPasswordResetEmail(email);
+          } catch (e) {
+            handleAuthError(e, (message: any) => {
+              Alert.alert('Synthia AI Chat', message);
+            });
+          }
         },
       }}>
       {children}

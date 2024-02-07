@@ -21,14 +21,13 @@ import * as ImagePicker from 'react-native-image-picker';
 import BottomSheets from '../components/BottomSheets';
 import useAppContext from '../context/useAppContext';
 import {createUser} from '../utils/Firebase';
-import NavigationService from '../routes/NavigationService';
 export interface IToggle {
   loading: boolean;
   isClick: boolean;
 }
 
 const emailRegEx = /^[a-zA-Z0-9._-]+@[gmail]+\.[a-zA-Z]{2,4}$/;
-let loginValidation = object({
+let signUpValidation = object({
   fullName: string().required('Full name is required'),
   email: string()
     .matches(emailRegEx, 'Email address is not valid!')
@@ -88,7 +87,7 @@ const SignUp = () => {
     }
   }, []);
 
-  const loginHandler = async (values: any) => {
+  const signUpHandler = async (values: any) => {
     setHandleToggle({
       isClick: true,
       loading: true,
@@ -119,8 +118,8 @@ const SignUp = () => {
         confirmPassword: '',
       }}
       validateOnMount={true}
-      validationSchema={loginValidation}
-      onSubmit={(values: any) => loginHandler(values)}>
+      validationSchema={signUpValidation}
+      onSubmit={(values: any) => signUpHandler(values)}>
       {({
         handleChange,
         handleBlur,

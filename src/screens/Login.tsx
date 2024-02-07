@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useRef, useState} from 'react';
 import {globalStyle} from '../styles/globalStyle';
 import {COLORS, FONT, images} from '../constants';
@@ -128,9 +128,21 @@ const Login = () => {
                 <Text style={styles.errorText}>{errors.password}</Text>
               </View>
             ) : (
-              <View style={styles.errorContainer}>
-                <Text></Text>
-              </View>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => navigation?.navigate('ForgotPassword')}
+                style={{
+                  marginTop: 2,
+                  alignSelf: 'flex-end',
+                }}>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: FONT.notoSansMedium,
+                  }}>
+                  Forgot password?
+                </Text>
+              </TouchableOpacity>
             )}
           </View>
 

@@ -3,7 +3,7 @@ import messaging from '@react-native-firebase/messaging';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import PushNotification from 'react-native-push-notification';
-import {Platform} from 'react-native';
+import {Alert, Platform} from 'react-native';
 
 const firebaseAuth: any = auth();
 const db: any = firestore();
@@ -253,7 +253,12 @@ export const createUser = async (userCollection: any, confirmation: any) => {
       await db
         .collection(USERS)
         .doc(confirmation?.user?.uid)
-        .set({...userCollection, userImageUrl: url, fcmToken: fcmToken})
+        .set({
+          email: userCollection?.email,
+          fullName: userCollection?.fullName,
+          userImageUrl: url,
+          fcmToken: fcmToken,
+        })
         .then((response: any) => resolve(response))
         .catch((err: any) => {
           reject(err);

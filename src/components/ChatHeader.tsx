@@ -25,13 +25,13 @@ const ChatHeader = ({title}: any) => {
         <Text style={styles.heading}>Synthia {title}</Text>
       </View>
       <View style={styles.backContainer}>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <Ionicons
             name="ellipsis-horizontal-circle"
             color={COLORS.white}
             size={hp(3.8)}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

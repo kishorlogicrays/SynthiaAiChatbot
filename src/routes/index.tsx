@@ -12,6 +12,7 @@ import {getValueInAsync} from '../utils/AsyncStorage';
 import useAppContext from '../context/useAppContext';
 import SignUp from '../screens/SignUp';
 import NavigationService from './NavigationService';
+import ForgotPassword from '../screens/ForgotPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -69,6 +70,7 @@ const index = () => {
         <Stack.Group>
           <Stack.Screen name="Welcome" component={Welcome} />
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="Main" component={TabNavigation} />
           <Stack.Screen name="ChatScreen" component={Chat} />

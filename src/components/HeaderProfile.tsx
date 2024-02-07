@@ -30,12 +30,12 @@ const HeaderProfile = () => {
 
       <View style={styles.sideContainer}>
         <View style={styles.settingContainer}>
-          <Ionicons
+          {/* <Ionicons
             onPress={() => {}}
             name={'settings-outline'}
             size={wp(6)}
             color={COLORS.white}
-          />
+          /> */}
         </View>
       </View>
     </View>
