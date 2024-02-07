@@ -17,7 +17,7 @@ import SubmitButton from '../components/SubmitButton';
 import {useNavigation} from '@react-navigation/native';
 import Header from '../components/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import * as ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import BottomSheets from '../components/BottomSheets';
 import useAppContext from '../context/useAppContext';
 import {createUser} from '../utils/Firebase';
@@ -54,36 +54,30 @@ const SignUp = () => {
   const [profileImage, setProfileImage] = useState<any>(null);
 
   const onButtonPress = useCallback((type: any) => {
-    let options: any = {
-      maxWidth: 720,
-      maxHeight: 1280,
-      quality: 0.5,
-      storageOptions: {
-        path: 'images',
-        mediaType: 'photo',
-      },
-      includeBase64: true,
-    };
     if (type === 'camera') {
-      ImagePicker.launchCamera(options, async (response: any) => {
-        if (response?.didCancel) {
+      ImagePicker.openCamera({
+        cropping: true,
+        width: 500,
+        height: 500,
+        includeExif: true,
+      })
+        .then((image: any) => {
+          setProfileImage(image?.path);
           refRBSheet?.current?.close();
-          return;
-        } else {
-          setProfileImage(response?.assets[0]);
-          refRBSheet?.current?.close();
-        }
-      });
+        })
+        .catch(e => refRBSheet?.current?.close());
     } else {
-      ImagePicker.launchImageLibrary(options, async (response: any) => {
-        if (response?.didCancel) {
+      ImagePicker.openPicker({
+        cropping: true,
+        width: 500,
+        height: 500,
+        includeExif: true,
+      })
+        .then((image: any) => {
+          setProfileImage(image?.path);
           refRBSheet?.current?.close();
-          return;
-        } else {
-          setProfileImage(response?.assets[0]);
-          refRBSheet?.current?.close();
-        }
-      });
+        })
+        .catch(e => refRBSheet?.current?.close());
     }
   }, []);
 
@@ -140,9 +134,7 @@ const SignUp = () => {
           <View style={styles.photoContainer}>
             <View style={styles.imageViewContainer}>
               <Image
-                source={
-                  profileImage ? {uri: profileImage?.uri} : images.userLogo
-                }
+                source={profileImage ? {uri: profileImage} : images.userLogo}
                 resizeMode="cover"
                 style={styles.image}
               />

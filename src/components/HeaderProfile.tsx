@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -8,24 +8,28 @@ import {COLORS} from '../constants/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useAppContext from '../context/useAppContext';
 import {images} from '../constants';
+import {useNavigation} from '@react-navigation/core';
 
 const HeaderProfile = () => {
   const {authUser}: any = useAppContext();
+  const navigation: any = useNavigation();
 
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image
-          source={
-            authUser?.userImageUrl
-              ? {
-                  uri: authUser?.userImageUrl,
-                }
-              : images.userLogo
-          }
-          resizeMode="cover"
-          style={styles.headerImage}
-        />
+        <TouchableOpacity onPress={() => navigation?.navigate('Profile')}>
+          <Image
+            source={
+              authUser?.userImageUrl
+                ? {
+                    uri: authUser?.userImageUrl,
+                  }
+                : images.userLogo
+            }
+            resizeMode="cover"
+            style={styles.headerImage}
+          />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.sideContainer}>

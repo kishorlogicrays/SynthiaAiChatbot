@@ -275,7 +275,9 @@ export const updateUser = async (userDetails: any, userId: string) => {
       ? await uploadImage(userId, userDetails?.userImageUrl)
       : '';
     const docRef = db.collection(USERS).doc(userId);
-    const res = await docRef.update({...userDetails, userImageUrl: url});
+    const res = await docRef.update(
+      url ? {...userDetails, userImageUrl: url} : userDetails,
+    );
     return res;
   } catch (error) {
     return error;
@@ -329,7 +331,6 @@ export const getFileLocalPath = (response: any) => {
  */
 export const logoutUser = () => {
   return new Promise((resolve: any, reject: any) => {
-    console.log('called');
     firebaseAuth
       .signOut()
       .then(() => {

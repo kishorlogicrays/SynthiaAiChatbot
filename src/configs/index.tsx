@@ -7,14 +7,26 @@ export const getChatGPTResponse = async (
   openAiApiKey: string,
   type: string,
   inputText: any,
+  firstLanguage?: string,
+  secondLanguage?: string,
 ) => {
   try {
     const messageMap: any = {
       Code: 'Generate optimized code snippet for the following task: ',
       Booking: 'Book a travel itinerary based on the details: ',
       Content: 'Compose a compelling blog post on the topic: ',
-      Health: 'Provide practical health tips for a healthy lifestyle: ',
-      Translate: 'Translate the following sentence into another language: ',
+      Health:
+        firstLanguage && secondLanguage
+          ? `Provide practical health/medicine detail in convert ${firstLanguage} to ${secondLanguage}: `
+          : secondLanguage
+          ? `Provide practical health/medicine detail in ${secondLanguage}: `
+          : 'Provide practical health tips for a healthy lifestyle: ',
+      Translate:
+        firstLanguage && secondLanguage
+          ? `Translate the sentence into ${firstLanguage} to ${secondLanguage}: `
+          : secondLanguage
+          ? `Translate the following sentence into ${secondLanguage} language: `
+          : `Translate the following sentence into another language: `,
       Music: 'Create lyrics for a song inspired by: ',
       Movies: 'Recommend must-watch movies related to: ',
     };
@@ -39,7 +51,7 @@ export const getChatGPTResponse = async (
             content: type ? `${messageMap[type]} : ${inputText}` : inputText,
           },
         ],
-        max_tokens: maxTokensMap[type] || 150,
+        // max_tokens: maxTokensMap[type] || 150,
         temperature: 0.7,
       },
       {

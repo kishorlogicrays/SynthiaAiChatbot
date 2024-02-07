@@ -6,7 +6,6 @@ import firestore from '@react-native-firebase/firestore';
 import TabNavigation from './TabNavigator';
 import Chat from '../screens/Chat';
 import Welcome from '../screens/Welcome';
-import VideoPlayerAndroid from '../screens/VideoPlayerAndroid';
 import Login from '../screens/Login';
 import {getValueInAsync} from '../utils/AsyncStorage';
 import useAppContext from '../context/useAppContext';
@@ -74,7 +73,6 @@ const index = () => {
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="Main" component={TabNavigation} />
           <Stack.Screen name="ChatScreen" component={Chat} />
-          <Stack.Screen name="VideoPlayer" component={VideoPlayerAndroid} />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>

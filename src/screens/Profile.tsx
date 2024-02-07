@@ -1,4 +1,5 @@
 import {
+  Alert,
   ImageBackground,
   StyleSheet,
   Text,
@@ -20,9 +21,10 @@ import {
 import InputText from '../components/InputText';
 import SubmitButton from '../components/SubmitButton';
 import useAppContext from '../context/useAppContext';
-import * as ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import BottomSheets from '../components/BottomSheets';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
 
 export interface IToggle {
   loading: boolean;
@@ -35,8 +37,9 @@ let loginValidation = object({
 
 const Profile = () => {
   const emailRef: any = useRef();
-  const {authUser}: any = useAppContext();
+  const {authUser, fetchCurrentUserData}: any = useAppContext();
   const userId = getAuthUserId();
+  const navigation: any = useNavigation();
   const refRBSheet: any = useRef();
   const [profileImage, setProfileImage] = useState<any>(authUser?.userImageUrl);
   const [handleToggle, setHandleToggle] = useState<IToggle>({
@@ -50,69 +53,95 @@ const Profile = () => {
       loading: true,
     });
     const userCollection = {
-      ...values,
+      fullName: values.fullName,
       userImageUrl: profileImage,
     };
-
     await updateUser(userCollection, userId);
     setHandleToggle({
       isClick: false,
       loading: false,
     });
+    Alert.alert(
+      'Sythia AI Chat',
+      'Details Udpated successfully',
+      [
+        {
+          text: 'Ok',
+          onPress: () => fetchCurrentUserData(),
+        },
+      ],
+      {
+        cancelable: false,
+      },
+    );
   };
 
   const onButtonPress = useCallback((type: any) => {
-    let options: any = {
-      maxWidth: 720,
-      maxHeight: 1280,
-      quality: 0.5,
-      storageOptions: {
-        path: 'images',
-        mediaType: 'photo',
-      },
-      includeBase64: true,
-    };
     if (type === 'camera') {
-      ImagePicker.launchCamera(options, async (response: any) => {
-        if (response?.didCancel) {
+      ImagePicker.openCamera({
+        cropping: true,
+        width: 500,
+        height: 500,
+        includeExif: true,
+      })
+        .then((image: any) => {
+          setProfileImage(image?.path);
           refRBSheet?.current?.close();
-          return;
-        } else {
-          setProfileImage(response?.assets[0]);
-          refRBSheet?.current?.close();
-        }
-      });
+        })
+        .catch(e => refRBSheet?.current?.close());
     } else {
-      ImagePicker.launchImageLibrary(options, async (response: any) => {
-        if (response?.didCancel) {
+      ImagePicker.openPicker({
+        cropping: true,
+        width: 500,
+        height: 500,
+        includeExif: true,
+      })
+        .then((image: any) => {
+          setProfileImage(image?.path);
           refRBSheet?.current?.close();
-          return;
-        } else {
-          setProfileImage(response?.assets[0]);
-          refRBSheet?.current?.close();
-        }
-      });
+        })
+        .catch(e => refRBSheet?.current?.close());
     }
   }, []);
+
+  const logoutAction = () => {
+    Alert.alert(
+      'Log out',
+      'Are you sure you want to Logout?',
+      [
+        {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+        {
+          text: 'Yes',
+          onPress: () => {
+            logoutUser()
+              .then(() => {
+                navigation?.reset({
+                  index: 0,
+                  routes: [{name: 'Login'}],
+                });
+              })
+              .catch(e => {
+                console.log('error : ', e);
+              });
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
 
   return (
     <View style={globalStyle.container}>
       <View style={styles.profilePicContainer}>
         <TouchableOpacity
           style={styles.logoutButton}
-          onPress={() => logoutUser()}
+          onPress={logoutAction}
           activeOpacity={0.9}>
           <ADIcons name="logout" color={'#FFFFFF'} size={15} />
           <Text style={{color: '#FFFFFF', fontSize: wp(3)}}>Logout</Text>
         </TouchableOpacity>
         <ImageBackground
-          source={
-            profileImage?.uri
-              ? profileImage
-              : profileImage
-              ? {uri: profileImage}
-              : images.userLogo
-          }
+          source={profileImage ? {uri: profileImage} : images.userLogo}
           style={styles.profilePicture}
           imageStyle={styles.profilePictureStyle}>
           <TouchableOpacity
@@ -180,7 +209,6 @@ const Profile = () => {
                 isEditable={false}
                 customStyle={{color: '#888888'}}
               />
-
               <View style={styles.userInputContainer}>
                 <SubmitButton
                   isDisable={!isValid || handleToggle?.isClick}

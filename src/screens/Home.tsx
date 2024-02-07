@@ -67,7 +67,7 @@ const features = [
     title: 'Movies',
     description:
       'You can find and review more movies and checking details of upcoming movies',
-    image: 'heart-pulse',
+    image: 'movie-filter',
     color: '#61f8cb',
   },
 ];

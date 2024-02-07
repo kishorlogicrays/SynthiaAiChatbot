@@ -14,7 +14,12 @@ const Card = (props: IProps) => {
   const {data}: any = props;
   return (
     <TouchableOpacity
-      onPress={() => navigation?.navigate('ChatScreen', {aiType: data?.title})}
+      onPress={() =>
+        navigation?.navigate('ChatScreen', {
+          aiType: data?.title,
+          shouldBackBtnVisible: true,
+        })
+      }
       style={styles.container}>
       <View style={styles.imageContainer}>
         <MaterialCommunityIcons

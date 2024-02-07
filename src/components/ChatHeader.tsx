@@ -8,21 +8,25 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {COLORS, FONT} from '../constants';
 import {useNavigation} from '@react-navigation/native';
 
-const ChatHeader = ({title}: any) => {
+const ChatHeader = ({title, shouldBackBtnVisible}: any) => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.backContainer}>
-        <TouchableOpacity onPress={() => navigation?.goBack()}>
-          <Ionicons
-            name="arrow-back-circle-outline"
-            color={COLORS.white}
-            size={hp(3.8)}
-          />
-        </TouchableOpacity>
+        {shouldBackBtnVisible && (
+          <TouchableOpacity onPress={() => navigation?.goBack()}>
+            <Ionicons
+              name="arrow-back-circle-outline"
+              color={COLORS.white}
+              size={hp(3.8)}
+            />
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.titleContainer}>
-        <Text style={styles.heading}>Synthia {title}</Text>
+        <Text style={styles.heading}>
+          {shouldBackBtnVisible ? `Synthia ${title}` : 'Synthia AI'}
+        </Text>
       </View>
       <View style={styles.backContainer}>
         {/* <TouchableOpacity>

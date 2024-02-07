@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Text,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {globalStyle} from '../styles/globalStyle';
@@ -11,10 +12,28 @@ import {GiftedChat, InputToolbar} from 'react-native-gifted-chat';
 import {getChatGPTResponse, imageArtGeneration} from '../configs';
 import {COLORS, FONT} from '../constants';
 import Voice from '@react-native-voice/voice';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import {requestMicrophonePermission} from '../utils/AskPermission';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import SelectDropdown from 'react-native-select-dropdown';
 import useAppContext from '../context/useAppContext';
+
+const initialLanguage = [
+  'English',
+  'Chinese',
+  'French',
+  'German',
+  'Gujarati',
+  'Hindi',
+  'Italian',
+  'Japanese',
+  'Korean',
+  'Russian',
+  'Spanish',
+];
 
 const Chat = (props: any) => {
   const {storeChat, authUser, getChatCollectionData, aiAPIKey}: any =
@@ -24,6 +43,8 @@ const Chat = (props: any) => {
   const [messages, setMessages] = useState<any>([]);
   const [isOnMic, setIsOnMic] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
+  const [firstLanguage, setFirstLanguage] = useState('English');
+  const [secondLanguage, setSecondLanguage] = useState('');
 
   useEffect(() => {
     const data = async () => {
@@ -79,84 +100,64 @@ const Chat = (props: any) => {
     setIsOnMic(false);
   };
 
-  const onSend = useCallback(async (messages: any) => {
-    inputRef?.current?.clear();
-    setMessages((previousMessages: any) =>
-      GiftedChat.append(previousMessages, messages),
-    );
-    setIsTyping(true);
-    const userChat = await storeChat(
-      messages[0],
-      props?.route?.params?.aiType
-        ? props?.route?.params?.aiType
-        : 'generalChat',
-    );
-    if (userChat?.code) {
-      setIsTyping(false);
-    } else {
-      const userMessage = messages[0].text;
-      const gptResponse: any =
-        props?.route?.params?.aiType === 'Art'
-          ? await imageArtGeneration(aiAPIKey, userMessage)
-          : await getChatGPTResponse(
-              aiAPIKey,
-              props?.route?.params?.aiType,
-              userMessage,
-            );
-
-      const responseObject = {
-        _id: Math.random(),
-        ...(props?.route?.params?.aiType === 'Art' && {
-          image: gptResponse?.data[0]?.url,
-        }),
-        ...(props?.route?.params?.aiType != 'Art' && {text: gptResponse}),
-        createdAt: new Date(),
-        user: {
-          _id: '2',
-          name: 'ChatGPT',
-          avatar:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf_jxvmlHQ4r4ful-PsH6MRHOAm6T6sskKZQ&usqp=CAU',
-        },
-      };
-      await setMessages((previousMessages: any) =>
-        GiftedChat.append(previousMessages, [responseObject]),
+  const onSend = useCallback(
+    async (messages: any) => {
+      inputRef?.current?.clear();
+      setMessages((previousMessages: any) =>
+        GiftedChat.append(previousMessages, messages),
       );
-
-      const chatGPTResponse = await storeChat(
-        responseObject,
+      setIsTyping(true);
+      const userChat = await storeChat(
+        messages[0],
         props?.route?.params?.aiType
           ? props?.route?.params?.aiType
           : 'generalChat',
       );
+      if (userChat?.code) {
+        setIsTyping(false);
+      } else {
+        const userMessage = messages[0].text;
+        const gptResponse: any =
+          props?.route?.params?.aiType === 'Art'
+            ? await imageArtGeneration(aiAPIKey, userMessage)
+            : await getChatGPTResponse(
+                aiAPIKey,
+                props?.route?.params?.aiType,
+                userMessage,
+                firstLanguage,
+                secondLanguage,
+              );
+
+        const responseObject = {
+          _id: Math.random(),
+          ...(props?.route?.params?.aiType === 'Art' && {
+            image: gptResponse?.data[0]?.url,
+          }),
+          ...(props?.route?.params?.aiType != 'Art' && {text: gptResponse}),
+          createdAt: new Date(),
+          user: {
+            _id: '2',
+            name: 'ChatGPT',
+            avatar:
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf_jxvmlHQ4r4ful-PsH6MRHOAm6T6sskKZQ&usqp=CAU',
+          },
+        };
+        await setMessages((previousMessages: any) =>
+          GiftedChat.append(previousMessages, [responseObject]),
+        );
+
+        await storeChat(
+          responseObject,
+          props?.route?.params?.aiType
+            ? props?.route?.params?.aiType
+            : 'generalChat',
+        );
+        setIsTyping(false);
+      }
       setIsTyping(false);
-    }
-    // const userMessage = messages[0].text;
-    // const gptResponse: any =
-    //   props?.route?.params?.aiType === 'Art'
-    //     ? await imageArtGeneration(aiAPIKey, userMessage)
-    //     : await getChatGPTResponse(
-    //         aiAPIKey,
-    //         props?.route?.params?.aiType,
-    //         userMessage,
-    //       );
-
-    // const responseObject = {
-    //   _id: Math.random(),
-    //   ...(props?.route?.params?.aiType === 'Art' && {
-    //     image: gptResponse?.data[0]?.url,
-    //   }),
-    //   ...(props?.route?.params?.aiType != 'Art' && {text: gptResponse}),
-    //   createdAt: new Date(),
-    //   user: {
-    //     _id: '2',
-    //     name: 'ChatGPT',
-    //     avatar:
-    //       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf_jxvmlHQ4r4ful-PsH6MRHOAm6T6sskKZQ&usqp=CAU',
-    //   },
-    // };
-
-    setIsTyping(false);
-  }, []);
+    },
+    [secondLanguage],
+  );
 
   const RenderEmpty = (props: any) => {
     return (
@@ -265,7 +266,50 @@ const Chat = (props: any) => {
     <View style={globalStyle.container}>
       <ChatHeader
         title={props?.route?.params?.aiType ? props?.route?.params?.aiType : ''}
+        shouldBackBtnVisible={props?.route?.params?.shouldBackBtnVisible}
       />
+
+      {(props?.route?.params?.aiType === 'Translate' ||
+        props?.route?.params?.aiType === 'Health') && (
+        <View
+          style={{
+            height: wp(12),
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+          }}>
+          <SelectDropdown
+            data={initialLanguage}
+            dropdownStyle={{borderRadius: 10}}
+            selectedRowTextStyle={styles.selectedRowTextStyle}
+            buttonStyle={styles.buttonStyle}
+            defaultValueByIndex={0}
+            buttonTextStyle={styles.buttonTextStyle}
+            selectedRowStyle={styles.selectedRowStyle}
+            defaultButtonText="Select language"
+            rowTextStyle={styles.rowTextStyle}
+            onSelect={(selectedItem, index) => {
+              setFirstLanguage(selectedItem);
+            }}
+          />
+
+          <Text style={styles.heading}>To</Text>
+
+          <SelectDropdown
+            data={initialLanguage}
+            dropdownStyle={{borderRadius: 10}}
+            selectedRowTextStyle={styles.selectedRowTextStyle}
+            buttonStyle={styles.buttonStyle}
+            buttonTextStyle={styles.buttonTextStyle}
+            selectedRowStyle={styles.selectedRowStyle}
+            defaultButtonText="Select language"
+            rowTextStyle={styles.rowTextStyle}
+            onSelect={(selectedItem, index) => {
+              console.log('ON SELECT 2nd ----', selectedItem);
+              setSecondLanguage(selectedItem);
+            }}
+          />
+        </View>
+      )}
       <View style={styles.messageContainer}>
         <GiftedChat
           textInputRef={inputRef}
@@ -333,6 +377,36 @@ const styles = StyleSheet.create({
   image: {
     height: wp(30),
     width: wp(60),
+  },
+  selectedRowTextStyle: {
+    color: COLORS.black,
+    fontSize: wp(4),
+    fontFamily: FONT.notoSansMedium,
+  },
+  buttonStyle: {
+    backgroundColor: COLORS.lightWhite,
+    height: wp(8),
+    width: '38%',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: 10,
+  },
+  buttonTextStyle: {
+    fontFamily: FONT.notoSansMedium,
+    fontSize: wp(3.5),
+  },
+  selectedRowStyle: {
+    backgroundColor: COLORS.lightWhite,
+  },
+  rowTextStyle: {
+    fontSize: wp(3.5),
+    fontFamily: FONT.notoSansLight,
+  },
+  heading: {
+    color: COLORS.white,
+    fontFamily: FONT.notoSansMedium,
+    fontSize: hp(2),
+    alignSelf: 'center',
   },
 });
 

@@ -16,7 +16,12 @@ const AIBotView = () => {
       <TouchableOpacity
         style={styles.animation}
         activeOpacity={1}
-        onPress={() => navigation?.navigate('ChatScreen')}>
+        onPress={() =>
+          navigation?.navigate('ChatScreen', {
+            aiType: 'AI',
+            shouldBackBtnVisible: true,
+          })
+        }>
         <LottieView
           source={images.aiChatbot}
           autoPlay
@@ -25,7 +30,12 @@ const AIBotView = () => {
         />
       </TouchableOpacity>
       <Text
-        onPress={() => navigation?.navigate('ChatScreen')}
+        onPress={() =>
+          navigation?.navigate('ChatScreen', {
+            aiType: 'AI',
+            shouldBackBtnVisible: true,
+          })
+        }
         style={{
           fontFamily: FONT.notoSansBold,
           fontSize: wp(5),
