@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {Button, FlatList, StyleSheet, Text, View} from 'react-native';
 import {globalStyle} from '../styles/globalStyle';
 import HeaderProfile from '../components/HeaderProfile';
 import AIBotView from '../components/AIBotView';
@@ -7,6 +7,7 @@ import TitleHeader from '../components/TitleHeader';
 import Card from '../components/Card';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import useAppContext from '../context/useAppContext';
+import {loadInterstitial} from '../utils/IronSource';
 
 const features = [
   {
@@ -73,9 +74,10 @@ const features = [
 ];
 
 const Home = (props: any) => {
-  const {fetchCurrentUserData}: any = useAppContext();
+  const {fetchCurrentUserData, adsDetails}: any = useAppContext();
 
   useEffect(() => {
+    adsDetails?.showAdsGlobally && loadInterstitial();
     fetchCurrentUserData();
   }, []);
 

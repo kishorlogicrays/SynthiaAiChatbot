@@ -16,7 +16,7 @@ import ForgotPassword from '../screens/ForgotPassword';
 const Stack = createNativeStackNavigator();
 
 const index = () => {
-  const {setAuthUser, setAiAPIKey}: any = useAppContext();
+  const {setAuthUser, setAiAPIKey, setAdsDetails}: any = useAppContext();
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const [isSeenIntro, setIsSeenIntro] = useState(false);
@@ -38,7 +38,23 @@ const index = () => {
     const confirmationResponse: any = await firestore()
       .collection('Config')
       .get();
-    setAiAPIKey(confirmationResponse?._docs[0]?._data?.ChatGPT);
+    const {
+      ChatGPT,
+      androidAppKey,
+      interstitialPlacement,
+      iosAppKey,
+      rewardPlacement,
+      showAdsGlobally,
+    } = confirmationResponse?._docs[0]?._data;
+    const detailsAds = {
+      androidAppKey,
+      interstitialPlacement,
+      iosAppKey,
+      rewardPlacement,
+      showAdsGlobally,
+    };
+    setAdsDetails(detailsAds);
+    setAiAPIKey(ChatGPT);
   };
 
   const introValueCheck = async () => {

@@ -3,12 +3,10 @@ import {
   getChatCollection,
   getUserData,
   handleAuthError,
-  setPasswordResetLink,
   signInWithEmailPassword,
   signUpWithEmailPassword,
   storeChatCommunication,
 } from '../utils/Firebase';
-import NavigationService from '../routes/NavigationService';
 import {Alert} from 'react-native';
 import {firebase} from '@react-native-firebase/auth';
 
@@ -17,12 +15,15 @@ export const AppContext = createContext({});
 export const ContextProvider = ({children}: any) => {
   const [authUser, setAuthUser] = useState<any>();
   const [aiAPIKey, setAiAPIKey] = useState<string>('');
+  const [adsDetails, setAdsDetails] = useState<any>({});
 
   return (
     <AppContext.Provider
       value={{
         aiAPIKey,
         setAiAPIKey,
+        adsDetails,
+        setAdsDetails,
         authUser,
         setAuthUser,
         signUpUser: async (email: string, password: string) => {

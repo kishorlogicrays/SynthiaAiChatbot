@@ -214,7 +214,6 @@ export const uploadImage = async (userId: any, imgResponse: any) => {
       const storageRef = createImageStorageRef(userId, imgResponse);
       const imagePath = getFileLocalPath(imgResponse);
       const uploadTask = storageRef.putFile(imagePath);
-
       uploadTask.on('state_changed', null, reject, async () => {
         try {
           const downloadedURL = await storageRef.getDownloadURL();
@@ -269,9 +268,9 @@ export const createUser = async (userCollection: any, confirmation: any) => {
   });
 };
 
-export const updateUser = async (userDetails: any, userId: string) => {
+export const updateUser = async (userDetails: any, userId: any) => {
   try {
-    const url: string = userDetails?.userImageUrl?.uri
+    const url: any = userDetails?.userImageUrl
       ? await uploadImage(userId, userDetails?.userImageUrl)
       : '';
     const docRef = db.collection(USERS).doc(userId);
@@ -308,12 +307,7 @@ export const setCollectionData = async (
  * @param imgResponse An object containing image's fields and values with which to upload to the bucket.
  */
 export const createImageStorageRef = (userId: any, imgResponse: any) => {
-  const name =
-    imgResponse.fileName ||
-    imgResponse.name ||
-    imgResponse.path ||
-    imgResponse.uri;
-  const extension = name.split('.').pop();
+  const extension = imgResponse.split('.').pop();
   const path = `${imageStoragePath(userId)}/${'user_pic'}.${extension}`;
   return dbStorage.ref(path);
 };
@@ -322,8 +316,7 @@ export const createImageStorageRef = (userId: any, imgResponse: any) => {
  * Returns a local storage file path.
  */
 export const getFileLocalPath = (response: any) => {
-  const {uri, sourceURL} = response;
-  return Platform.OS === 'android' ? uri : `file:///${uri}`;
+  return Platform.OS === 'android' ? response : `file:///${response}`;
 };
 
 /**

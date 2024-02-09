@@ -117,6 +117,17 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
 
+    // IronSource
+    // implementation project(':reactnativeironsourcemediation')
+
+    // multi dex support
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    // Play Services
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
+    implementation 'com.google.android.gms:play-services-basement:18.1.0'
+    implementation 'com.google.android.gms:play-services-appset:16.0.2'
+
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {

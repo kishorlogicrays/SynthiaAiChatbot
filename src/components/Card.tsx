@@ -4,22 +4,26 @@ import {COLORS, FONT} from '../constants';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
+import {loadInterstitial} from '../utils/IronSource';
+import useAppContext from '../context/useAppContext';
 
 interface IProps {
   data: {};
 }
 
 const Card = (props: IProps) => {
+  const {adsDetails}: any = useAppContext();
   const navigation: any = useNavigation();
   const {data}: any = props;
   return (
     <TouchableOpacity
-      onPress={() =>
+      onPress={() => {
+        adsDetails?.showAdsGlobally && loadInterstitial();
         navigation?.navigate('ChatScreen', {
           aiType: data?.title,
           shouldBackBtnVisible: true,
-        })
-      }
+        });
+      }}
       style={styles.container}>
       <View style={styles.imageContainer}>
         <MaterialCommunityIcons

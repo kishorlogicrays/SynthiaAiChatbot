@@ -20,6 +20,8 @@ import {requestMicrophonePermission} from '../utils/AskPermission';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectDropdown from 'react-native-select-dropdown';
 import useAppContext from '../context/useAppContext';
+import {BackHandler} from 'react-native';
+import {RewardedVideo} from '../utils/IronSource';
 
 const initialLanguage = [
   'English',
@@ -36,8 +38,13 @@ const initialLanguage = [
 ];
 
 const Chat = (props: any) => {
-  const {storeChat, authUser, getChatCollectionData, aiAPIKey}: any =
-    useAppContext();
+  const {
+    storeChat,
+    authUser,
+    getChatCollectionData,
+    aiAPIKey,
+    adsDetails,
+  }: any = useAppContext();
   const inputRef: any = useRef();
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<any>([]);
@@ -45,6 +52,18 @@ const Chat = (props: any) => {
   const [isLoader, setIsLoader] = useState(false);
   const [firstLanguage, setFirstLanguage] = useState('English');
   const [secondLanguage, setSecondLanguage] = useState('');
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, []);
+
+  const handleBackPress = () => {
+    adsDetails?.showAdsGlobally && RewardedVideo();
+    return false;
+  };
 
   useEffect(() => {
     const data = async () => {
@@ -304,7 +323,6 @@ const Chat = (props: any) => {
             defaultButtonText="Select language"
             rowTextStyle={styles.rowTextStyle}
             onSelect={(selectedItem, index) => {
-              console.log('ON SELECT 2nd ----', selectedItem);
               setSecondLanguage(selectedItem);
             }}
           />
