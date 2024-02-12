@@ -1,21 +1,17 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import {COLORS} from '../constants';
+import {COLORS, images} from '../constants';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import {SvgIcon} from '../utils/SvgIcon';
 
 const Header = ({onPress}: any) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
-        <Ionicons
-          name="chevron-back-outline"
-          color={COLORS.white}
-          size={hp(3.8)}
-        />
+        <SvgIcon icon={images.back} style={{marginTop: 10, marginStart: 5}} />
       </TouchableOpacity>
     </View>
   );

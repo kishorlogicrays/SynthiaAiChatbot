@@ -28,6 +28,7 @@ const ForgotPassword = () => {
   const {sendResetLink}: any = useAppContext();
   const emailRef: any = useRef();
   const navigation: any = useNavigation();
+  const [activeInputField, setActiveInputField] = useState('');
   const [handleToggle, setHandleToggle] = useState<IToggle>({
     loading: false,
     isClick: false,
@@ -85,6 +86,7 @@ const ForgotPassword = () => {
               alignItems: 'center',
             }}>
             <InputText
+              name={'email'}
               placeHolderText={'Enter the email address'}
               isNextFocus={emailRef}
               isSecure={false}
@@ -93,6 +95,9 @@ const ForgotPassword = () => {
               values={values?.email}
               isError={touched.email && errors.email}
               isEditable={!handleToggle?.loading}
+              isTouch={touched.password}
+              activeInputField={activeInputField}
+              setActiveInputField={setActiveInputField}
             />
             {touched.email && errors.email ? (
               <View style={styles.errorContainer}>

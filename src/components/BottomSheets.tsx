@@ -1,5 +1,6 @@
 import React from 'react';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import {COLORS} from '../constants';
 
 const BottomSheets = ({refs, children, sheetHeight}: any) => {
   return (
@@ -12,6 +13,7 @@ const BottomSheets = ({refs, children, sheetHeight}: any) => {
           borderTopEndRadius: 10,
           borderTopStartRadius: 10,
           height: sheetHeight,
+          backgroundColor: COLORS.secondary,
         },
         wrapper: {
           backgroundColor: 'transparent',

@@ -21,6 +21,10 @@ interface IPropsTypes {
   isError?: any;
   isEditable?: boolean;
   customStyle?: string;
+  isTouch?: boolean;
+  setActiveInputField?: any;
+  name?: string;
+  activeInputField?: string;
 }
 
 const InputText = ({
@@ -40,7 +44,11 @@ const InputText = ({
   isError,
   isEditable,
   customStyle,
+  setActiveInputField,
+  name,
+  activeInputField,
 }: IPropsTypes) => {
+  let isPrimaryColor = activeInputField === name;
   return (
     <View style={textContainer}>
       <TextInput
@@ -48,15 +56,22 @@ const InputText = ({
         style={[
           styles.textInputStyles,
           {
-            borderColor: isError ? COLORS.danger : COLORS.secondary,
+            borderColor: isError
+              ? COLORS.danger
+              : isPrimaryColor
+              ? COLORS.pupal
+              : COLORS.secondary,
+            backgroundColor: '#181D2C',
           },
           customStyle,
         ]}
         placeholder={placeHolderText}
         autoFocus={isAutoFocus}
+        onFocus={() => setActiveInputField(name)}
         value={values}
         onChangeText={onChange}
         onSubmitEditing={() => {
+          setActiveInputField('');
           setTimeout(() => {
             isNextFocus?.current?.focus();
           }, 300);

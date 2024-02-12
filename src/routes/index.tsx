@@ -16,7 +16,8 @@ import ForgotPassword from '../screens/ForgotPassword';
 const Stack = createNativeStackNavigator();
 
 const index = () => {
-  const {setAuthUser, setAiAPIKey, setAdsDetails}: any = useAppContext();
+  const {setAuthUser, setAiAPIKey, setAdsDetails, fetchCurrentUserData}: any =
+    useAppContext();
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const [isSeenIntro, setIsSeenIntro] = useState(false);
@@ -24,6 +25,9 @@ const index = () => {
   function onAuthStateChanged(user: any) {
     setUser(user);
     setAuthUser(user);
+    if (user?.email) {
+      fetchCurrentUserData();
+    }
     if (initializing) setInitializing(false);
   }
 

@@ -48,7 +48,7 @@ const TabNavigation = () => {
                   backgroundColor: COLORS.background,
                   borderTopWidth: 0,
                   elevation: 0,
-                  height: wp(14),
+                  height: wp(16),
                 },
                 tabBarIcon: ({color, size, focused}): any => {
                   if (focused) {

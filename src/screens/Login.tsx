@@ -16,7 +16,6 @@ import useAppContext from '../context/useAppContext';
 import {getFCMToken, setCollectionData} from '../utils/Firebase';
 
 const USERS: string = 'users';
-
 export interface IToggle {
   loading: boolean;
   isClick: boolean;
@@ -37,6 +36,7 @@ const Login = () => {
   const navigation: any = useNavigation();
   const emailRef: any = useRef();
   const passwordRef: any = useRef();
+  const [activeInputField, setActiveInputField] = useState('');
   const [handleToggle, setHandleToggle] = useState<IToggle>({
     loading: false,
     isClick: false,
@@ -82,14 +82,14 @@ const Login = () => {
         <View style={[globalStyle.container, styles.container]}>
           {/* Heading container */}
           <View style={styles.headingContainer}>
-            <Text style={styles.headingText}>Welcome Back!</Text>
+            <Text style={styles.headingText}>Welcome!</Text>
             <Text style={styles.childText}>
-              Welcome to Synthia AI, your trusted companion for intelligent
+              Welcome to AI Monk, your trusted companion for intelligent
               interactions.
             </Text>
 
             <LottieView
-              source={images.aiChatbot}
+              source={images.login}
               autoPlay
               loop
               style={styles.logoContainer}
@@ -97,6 +97,7 @@ const Login = () => {
           </View>
           <View style={{marginTop: wp(20)}}>
             <InputText
+              name={'email'}
               refs={emailRef}
               placeHolderText={'Email address'}
               isNextFocus={passwordRef}
@@ -104,8 +105,11 @@ const Login = () => {
               onBlurInput={handleBlur('email')}
               onChange={handleChange('email')}
               values={values?.email.toLowerCase()}
+              isTouch={touched.email}
               isError={touched.email && errors.email}
               isEditable={!handleToggle?.loading}
+              activeInputField={activeInputField}
+              setActiveInputField={setActiveInputField}
             />
             {touched.email && errors.email ? (
               <View style={styles.errorContainer}>
@@ -118,6 +122,7 @@ const Login = () => {
             )}
 
             <InputText
+              name={'password'}
               textContainer={styles.userInputContainer}
               refs={passwordRef}
               placeHolderText={'Password'}
@@ -128,6 +133,9 @@ const Login = () => {
               values={values?.password}
               isError={touched.password && errors.password}
               isEditable={!handleToggle?.loading}
+              isTouch={touched.password}
+              activeInputField={activeInputField}
+              setActiveInputField={setActiveInputField}
             />
             {touched.password && errors.password ? (
               <View style={styles.errorContainer}>
@@ -198,7 +206,7 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(6),
   },
   logoContainer: {
-    marginTop: wp(6),
+    marginTop: wp(10),
     height: hp(24),
     width: hp(24),
     alignSelf: 'center',

@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import Routes from './src/routes';
 import {ContextProvider} from './src/context/ContextProvider';
 import {Platform, SafeAreaView, StatusBar, View} from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 import {COLORS} from './src/constants';
 import {requestMultiplePermissions} from './src/utils/AskPermission';
 import {
@@ -11,6 +12,7 @@ import {
 
 const App = () => {
   useEffect(() => {
+    SplashScreen.hide();
     IronSource.init(Platform?.OS === 'android' ? '1d7a9f555' : '1d7bad02d');
     InitEvent.onInitializationComplete.setListener(() => {
       console.log('onInitializationComplete');

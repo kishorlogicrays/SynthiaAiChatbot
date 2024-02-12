@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   container: {
     height: 46,
     width: screenWidth / 1.2,
-    borderRadius: 10,
+    borderRadius: 100,
     backgroundColor: COLORS.blue,
     shadowColor: COLORS.black,
     shadowOffset: {

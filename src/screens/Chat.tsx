@@ -8,7 +8,7 @@ import {
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {globalStyle} from '../styles/globalStyle';
 import ChatHeader from '../components/ChatHeader';
-import {GiftedChat, InputToolbar} from 'react-native-gifted-chat';
+import {Bubble, GiftedChat, InputToolbar} from 'react-native-gifted-chat';
 import {getChatGPTResponse, imageArtGeneration} from '../configs';
 import {COLORS, FONT} from '../constants';
 import Voice from '@react-native-voice/voice';
@@ -61,7 +61,7 @@ const Chat = (props: any) => {
   }, []);
 
   const handleBackPress = () => {
-    adsDetails?.showAdsGlobally && RewardedVideo();
+    adsDetails?.showAdsGlobally && RewardedVideo(adsDetails?.rewardPlacement);
     return false;
   };
 
@@ -216,8 +216,8 @@ const Chat = (props: any) => {
     return (
       <View style={styles.customDown}>
         <Ionicons
-          name={'chevron-down-circle'}
-          size={30}
+          name={'chevron-down-outline'}
+          size={26}
           color={COLORS.background}
         />
       </View>
@@ -270,7 +270,7 @@ const Chat = (props: any) => {
                 styles.actionButton,
                 {
                   marginEnd: 10,
-                  backgroundColor: COLORS.blue,
+                  backgroundColor: COLORS.lightBlue,
                 },
               ]}>
               <Ionicons color={COLORS.white} name={'send'} size={wp(4.6)} />
@@ -281,8 +281,36 @@ const Chat = (props: any) => {
     );
   };
 
+  const Bubbles = (props: any) => {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            backgroundColor: COLORS.lightBlue,
+          },
+          left: {
+            backgroundColor: COLORS.cards,
+          },
+        }}
+        textStyle={{
+          right: {
+            fontFamily: FONT.notoSansMedium,
+            fontSize: wp(3.6),
+            color: COLORS.white,
+          },
+          left: {
+            fontFamily: FONT.notoSansMedium,
+            fontSize: wp(3.6),
+            color: COLORS.white,
+          },
+        }}
+      />
+    );
+  };
+
   return (
-    <View style={globalStyle.container}>
+    <View style={styles.mainContainer}>
       <ChatHeader
         title={props?.route?.params?.aiType ? props?.route?.params?.aiType : ''}
         shouldBackBtnVisible={props?.route?.params?.shouldBackBtnVisible}
@@ -349,6 +377,7 @@ const Chat = (props: any) => {
           renderInputToolbar={(props: any) => renderInput(props)}
           isLoadingEarlier={true}
           renderChatEmpty={(props: any) => <RenderEmpty {...props} />}
+          renderBubble={(props: any) => <Bubbles {...props} />}
         />
       </View>
     </View>
@@ -356,11 +385,14 @@ const Chat = (props: any) => {
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {backgroundColor: COLORS.background, flex: 1},
   messageContainer: {
     flex: 1,
-    backgroundColor: COLORS.grayDark,
+    backgroundColor: COLORS.background,
     borderTopLeftRadius: wp(3),
     borderTopRightRadius: wp(3),
+    borderTopWidth: 0.8,
+    borderColor: '#181D2C',
   },
   emptyText: {
     fontSize: wp(4),
@@ -373,15 +405,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   customDown: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
   },
   inputContainerStyle: {
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.tabBackColor,
     borderTopLeftRadius: wp(3),
     borderTopRightRadius: wp(3),
-    borderTopColor: COLORS.background,
+    borderTopColor: COLORS.tabBackColor,
     minHeight: wp(12),
   },
   actionButton: {

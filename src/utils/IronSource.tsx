@@ -9,7 +9,6 @@ import {
 
 LevelPlayInterstitialEvents.onAdReady.setListener(
   (adInfo: IronSourceAdInfo) => {
-    console.log('Click 1 -----', adInfo);
     IronSource.showInterstitial('DefaultInterstitial');
   },
 );
@@ -60,10 +59,10 @@ LevelPlayRewardedVideoEvents.onAdClicked.setListener(
   (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
 );
 
-export const RewardedVideo = async () => {
+export const RewardedVideo = async (placement: string) => {
   await IronSource.shouldTrackNetworkState(true);
   const isAvailable: boolean = await IronSource.isRewardedVideoAvailable();
   if (isAvailable) {
-    IronSource.showRewardedVideo('DefaultRewardedVideo');
+    IronSource.showRewardedVideo(placement);
   }
 };

@@ -1,8 +1,8 @@
 import {Dimensions} from 'react-native';
 
 export const COLORS = {
-  background: '#0e0e10',
-  cards: '#202123',
+  background: '#070911',
+  cards: '#0F111B',
   grayDark: '#38393b',
   blue: '#0258f9',
   blueDark: '#2b4292',
@@ -13,6 +13,10 @@ export const COLORS = {
   danger: '#F44336',
   secondary: '#4A4E51',
   border: '#f19c12',
+  pupal: '#3BF6F1',
+  lightBlue: '#3F43F2',
+  borderColor: '#181D2C',
+  tabBackColor: '#1C2132',
 };
 
 export const SCREEN_HEIGHT = Dimensions.get('screen').height;

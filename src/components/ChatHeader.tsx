@@ -19,7 +19,8 @@ const ChatHeader = ({title, shouldBackBtnVisible}: any) => {
         {shouldBackBtnVisible && (
           <TouchableOpacity
             onPress={() => {
-              adsDetails?.showAdsGlobally && RewardedVideo();
+              adsDetails?.showAdsGlobally &&
+                RewardedVideo(adsDetails?.rewardPlacement);
               navigation?.goBack();
             }}>
             <Ionicons

@@ -2,32 +2,32 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {globalStyle} from '../styles/globalStyle';
 import {COLORS, FONT, images} from '../constants';
-import LottieView from 'lottie-react-native';
 import {useNavigation} from '@react-navigation/native';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {storeValueInAsync} from '../utils/AsyncStorage';
+import {SvgIcon} from '../utils/SvgIcon';
 
 const Welcome = () => {
   const navigation = useNavigation();
 
   return (
     <View style={[globalStyle.container, styles.container]}>
+      {/* Logo container */}
+      <View>
+        <SvgIcon
+          icon={images.welcome}
+          style={{marginTop: wp(24)}}
+          preserveAspectRatio="none"
+        />
+      </View>
+
       {/* Heading container */}
       <View style={styles.headingContainer}>
-        <Text style={styles.headingText}>Synthia AI</Text>
+        <Text style={styles.headingText}>Our Intelligent Chat</Text>
+        <Text style={[styles.headingText, {color: COLORS.pupal}]}>AI Monk</Text>
         <Text style={styles.childText}>
           {`The future by here, powered by AI.\nSynthia AI understands you, providing tailored solutions and insights.`}
         </Text>
-      </View>
-
-      {/* Logo container */}
-      <View>
-        <LottieView
-          source={images.aiChatbot}
-          autoPlay
-          loop
-          style={styles.logo}
-        />
       </View>
 
       {/* Button Container */}
@@ -49,10 +49,12 @@ const Welcome = () => {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
-  headingContainer: {},
+  headingContainer: {
+    marginTop: wp(16),
+  },
   headingText: {
     fontFamily: FONT.notoSansExtraBold,
     color: COLORS.white,
@@ -66,19 +68,15 @@ const styles = StyleSheet.create({
     marginTop: wp(3),
     marginHorizontal: wp(3),
   },
-  logo: {
-    marginTop: wp(16),
-    height: wp(84),
-    width: wp(84),
-  },
   buttonContainer: {
-    marginTop: wp(30),
+    marginTop: wp(15),
     height: wp(12),
-    width: wp(80),
-    borderRadius: 10,
-    backgroundColor: COLORS.blue,
+    width: wp(60),
+    borderRadius: wp(40),
+    backgroundColor: COLORS.lightBlue,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: wp(10),
   },
 });
 

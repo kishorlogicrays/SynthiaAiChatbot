@@ -21,6 +21,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import BottomSheets from '../components/BottomSheets';
 import useAppContext from '../context/useAppContext';
 import {createUser} from '../utils/Firebase';
+import {SvgIcon} from '../utils/SvgIcon';
 export interface IToggle {
   loading: boolean;
   isClick: boolean;
@@ -47,6 +48,7 @@ const SignUp = () => {
   const passwordRef: any = useRef();
   const confirmPassRef: any = useRef();
   const refRBSheet: any = useRef();
+  const [activeInputField, setActiveInputField] = useState('');
   const [handleToggle, setHandleToggle] = useState<IToggle>({
     loading: false,
     isClick: false,
@@ -142,7 +144,7 @@ const SignUp = () => {
                 activeOpacity={0.9}
                 onPress={() => refRBSheet.current.open()}
                 style={{position: 'absolute', bottom: 0, right: 0}}>
-                <Ionicons name={'add-circle'} size={50} color={COLORS.white} />
+                <Ionicons name={'add-circle'} size={45} color={COLORS.white} />
               </TouchableOpacity>
             </View>
           </View>
@@ -154,14 +156,18 @@ const SignUp = () => {
               alignItems: 'center',
             }}>
             <InputText
+              name={'fullName'}
               placeHolderText={'Enter the full name'}
               isNextFocus={emailRef}
               isSecure={false}
               onBlurInput={handleBlur('fullName')}
               onChange={handleChange('fullName')}
               values={values?.fullName}
+              isTouch={touched.fullName}
               isError={touched.fullName && errors.fullName}
               isEditable={!handleToggle?.loading}
+              activeInputField={activeInputField}
+              setActiveInputField={setActiveInputField}
             />
             {touched.fullName && errors.fullName ? (
               <View style={styles.errorContainer}>
@@ -174,16 +180,20 @@ const SignUp = () => {
             )}
 
             <InputText
+              name={'email'}
               refs={emailRef}
               textContainer={styles.userInputContainer}
               placeHolderText={'Enter the email address'}
               isNextFocus={passwordRef}
               isSecure={false}
               onBlurInput={handleBlur('email')}
+              isTouch={touched.email}
               onChange={handleChange('email')}
               values={values?.email.toLowerCase()}
               isError={touched.email && errors.email}
               isEditable={!handleToggle?.loading}
+              activeInputField={activeInputField}
+              setActiveInputField={setActiveInputField}
             />
             {touched.email && errors.email ? (
               <View style={styles.errorContainer}>
@@ -196,6 +206,7 @@ const SignUp = () => {
             )}
 
             <InputText
+              name={'Password'}
               textContainer={styles.userInputContainer}
               refs={passwordRef}
               placeHolderText={'Password'}
@@ -203,9 +214,12 @@ const SignUp = () => {
               isSecure={true}
               onBlurInput={handleBlur('password')}
               onChange={handleChange('password')}
+              isTouch={touched.password}
               values={values?.password}
               isError={touched.password && errors.password}
               isEditable={!handleToggle?.loading}
+              activeInputField={activeInputField}
+              setActiveInputField={setActiveInputField}
             />
             {touched.password && errors.password ? (
               <View style={styles.errorContainer}>
@@ -218,6 +232,7 @@ const SignUp = () => {
             )}
 
             <InputText
+              name={'confirmPassword'}
               textContainer={styles.userInputContainer}
               refs={confirmPassRef}
               placeHolderText={'Confirm Password'}
@@ -225,9 +240,12 @@ const SignUp = () => {
               isSecure={true}
               onBlurInput={handleBlur('confirmPassword')}
               onChange={handleChange('confirmPassword')}
+              isTouch={touched.confirmPassword}
               values={values?.confirmPassword}
               isError={touched.confirmPassword && errors.confirmPassword}
               isEditable={!handleToggle?.loading}
+              activeInputField={activeInputField}
+              setActiveInputField={setActiveInputField}
             />
             {touched.confirmPassword && errors.confirmPassword ? (
               <View style={styles.errorContainer}>
@@ -273,8 +291,8 @@ const SignUp = () => {
                   style={styles.boxContainer}
                   activeOpacity={0.9}
                   onPress={() => onButtonPress('camera')}>
-                  <Ionicons name="camera" size={30} color={COLORS.background} />
-                  <Text style={[styles.signUpText, {color: COLORS.background}]}>
+                  <Ionicons name="camera" size={30} color={COLORS.white} />
+                  <Text style={[styles.signUpText, {color: COLORS.white}]}>
                     Camera
                   </Text>
                 </TouchableOpacity>
@@ -284,8 +302,8 @@ const SignUp = () => {
                   style={styles.boxContainer}
                   activeOpacity={0.9}
                   onPress={() => onButtonPress('gallery')}>
-                  <Ionicons name="image" size={30} color={COLORS.background} />
-                  <Text style={[styles.signUpText, {color: COLORS.background}]}>
+                  <Ionicons name="image" size={30} color={COLORS.white} />
+                  <Text style={[styles.signUpText, {color: COLORS.white}]}>
                     Gallery
                   </Text>
                 </TouchableOpacity>
@@ -360,6 +378,15 @@ const styles = StyleSheet.create({
   boxContainer: {
     alignSelf: 'center',
     alignItems: 'center',
+    shadowColor: '#fff',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
 });
 

@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {COLORS, FONT, images} from '../constants';
 import {
@@ -7,12 +7,34 @@ import {
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
+import useAppContext from '../context/useAppContext';
 
 const AIBotView = () => {
   const navigation: any = useNavigation();
+  const {authUser}: any = useAppContext();
   return (
     <View style={styles.container}>
-      <Text style={styles.greetingText}>Welcome Back!</Text>
+      {/* user Header */}
+      <TouchableOpacity
+        onPress={() => navigation?.navigate('Profile')}
+        style={styles.imageContainer}>
+        <Image
+          source={
+            authUser?.userImageUrl
+              ? {
+                  uri: authUser?.userImageUrl,
+                }
+              : images.userLogo
+          }
+          resizeMode="cover"
+          style={styles.headerImage}
+        />
+        <Text style={styles.userName}>
+          {authUser?.fullName ? authUser?.fullName : 'User'}
+        </Text>
+      </TouchableOpacity>
+
+      <Text style={styles.greetingText}>{`How may i help\nyou today ?`}</Text>
       <TouchableOpacity
         style={styles.animation}
         activeOpacity={1}
@@ -29,20 +51,6 @@ const AIBotView = () => {
           style={styles.logoContainer}
         />
       </TouchableOpacity>
-      <Text
-        onPress={() =>
-          navigation?.navigate('ChatScreen', {
-            aiType: 'AI',
-            shouldBackBtnVisible: true,
-          })
-        }
-        style={{
-          fontFamily: FONT.notoSansBold,
-          fontSize: wp(5),
-          color: COLORS.white,
-        }}>
-        Tap to chat
-      </Text>
     </View>
   );
 };
@@ -51,18 +59,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: wp(5),
   },
   greetingText: {
-    fontSize: wp(4),
-    fontFamily: FONT.notoSansMedium,
-    color: '#8a848e',
+    fontSize: wp(6),
+    fontFamily: FONT.notoSansBold,
+    color: COLORS.lightWhite,
+    marginStart: wp(4),
+    marginTop: wp(2),
   },
-  animation: {padding: wp(5)},
+  animation: {padding: wp(5), alignItems: 'center'},
   logoContainer: {
     height: hp(30),
     width: hp(30),
+  },
+  imageContainer: {
+    height: hp(6.5),
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    marginVertical: wp(2),
+  },
+  headerImage: {
+    height: hp(5),
+    width: wp(10),
+    borderRadius: wp(7),
+    borderWidth: 1,
+    borderColor: COLORS.white,
+    marginStart: wp(2),
+  },
+  userName: {
+    color: COLORS.white,
+    marginStart: wp(2),
+    fontFamily: FONT.notoSansMedium,
   },
 });
 
