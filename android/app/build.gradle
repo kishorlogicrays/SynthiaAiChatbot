@@ -123,6 +123,9 @@ dependencies {
     // multi dex support
     implementation 'androidx.multidex:multidex:2.0.1'
 
+    // Fs module
+    implementation project(':react-native-fs')
+
     // Play Services
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     implementation 'com.google.android.gms:play-services-basement:18.1.0'

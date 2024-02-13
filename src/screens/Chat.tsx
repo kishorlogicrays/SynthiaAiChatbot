@@ -22,6 +22,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import useAppContext from '../context/useAppContext';
 import {BackHandler} from 'react-native';
 import {RewardedVideo} from '../utils/IronSource';
+import ZoomImage from '../components/ZoomImage';
 
 const initialLanguage = [
   'English',
@@ -309,6 +310,11 @@ const Chat = (props: any) => {
     );
   };
 
+  const renderMessageImage = (props: any) => {
+    const {currentMessage} = props;
+    return <ZoomImage imageUri={currentMessage.image} />;
+  };
+
   return (
     <View style={styles.mainContainer}>
       <ChatHeader
@@ -370,6 +376,7 @@ const Chat = (props: any) => {
             avatar: authUser?.userImageUrl,
             name: authUser?.email,
           }}
+          showUserAvatar={false}
           alwaysShowSend={true}
           isTyping={isTyping}
           infiniteScroll={true}
@@ -377,6 +384,7 @@ const Chat = (props: any) => {
           messagesContainerStyle={
             messages?.length !== 0 ? null : {transform: [{scaleY: -1}]}
           }
+          renderMessageImage={renderMessageImage}
           scrollToBottom={true}
           scrollToBottomComponent={customDownButton}
           renderInputToolbar={(props: any) => renderInput(props)}
