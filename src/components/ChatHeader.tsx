@@ -5,10 +5,11 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {COLORS, FONT} from '../constants';
+import {COLORS, FONT, images} from '../constants';
 import {useNavigation} from '@react-navigation/native';
 import {RewardedVideo} from '../utils/IronSource';
 import useAppContext from '../context/useAppContext';
+import {SvgIcon} from '../utils/SvgIcon';
 
 const ChatHeader = ({title, shouldBackBtnVisible}: any) => {
   const {adsDetails}: any = useAppContext();
@@ -18,22 +19,22 @@ const ChatHeader = ({title, shouldBackBtnVisible}: any) => {
       <View style={styles.backContainer}>
         {shouldBackBtnVisible && (
           <TouchableOpacity
+            activeOpacity={0.8}
             onPress={() => {
               adsDetails?.showAdsGlobally &&
                 RewardedVideo(adsDetails?.rewardPlacement);
               navigation?.goBack();
             }}>
-            <Ionicons
-              name="arrow-back-circle-outline"
-              color={COLORS.white}
-              size={hp(3.8)}
+            <SvgIcon
+              icon={images.back}
+              style={{marginVertical: 10, marginStart: 5}}
             />
           </TouchableOpacity>
         )}
       </View>
       <View style={styles.titleContainer}>
         <Text style={styles.heading}>
-          {shouldBackBtnVisible ? `Synthia ${title}` : 'Synthia AI'}
+          {shouldBackBtnVisible ? `AI Monk ${title}` : 'AI Monk'}
         </Text>
       </View>
       <View style={styles.backContainer}>

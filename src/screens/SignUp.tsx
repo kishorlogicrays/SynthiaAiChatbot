@@ -62,6 +62,7 @@ const SignUp = () => {
         width: 500,
         height: 500,
         includeExif: true,
+        compressImageQuality: 0.8,
       })
         .then((image: any) => {
           setProfileImage(image?.path);
@@ -74,6 +75,7 @@ const SignUp = () => {
         width: 500,
         height: 500,
         includeExif: true,
+        compressImageQuality: 0.8,
       })
         .then((image: any) => {
           setProfileImage(image?.path);
@@ -344,7 +346,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: wp(20),
   },
-
   errorContainer: {
     flexDirection: 'row',
     alignSelf: 'flex-start',

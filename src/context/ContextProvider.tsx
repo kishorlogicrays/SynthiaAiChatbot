@@ -35,7 +35,7 @@ export const ContextProvider = ({children}: any) => {
             return confirmation;
           } catch (e: any) {
             handleAuthError(e, (message: any) => {
-              Alert.alert('Synthia AI Chat', message);
+              Alert.alert('AI Monk', message);
             });
             return e;
           }
@@ -46,7 +46,7 @@ export const ContextProvider = ({children}: any) => {
             return confirmation;
           } catch (e) {
             handleAuthError(e, (message: any) => {
-              Alert.alert('Synthia AI Chat', message);
+              Alert.alert('AI Monk', message);
             });
             return e;
           }
@@ -57,7 +57,7 @@ export const ContextProvider = ({children}: any) => {
             setAuthUser(userCollection?._data);
           } catch (e) {
             handleAuthError(e, (message: any) => {
-              Alert.alert('Synthia AI Chat', message);
+              Alert.alert('AI Monk', message);
             });
             return e;
           }
@@ -67,7 +67,7 @@ export const ContextProvider = ({children}: any) => {
             await storeChatCommunication(message, collectionType);
           } catch (e: any) {
             handleAuthError(e, (message: any) => {
-              Alert.alert('Synthia AI Chat', message);
+              Alert.alert('AI Monk', message);
             });
             return e;
           }
@@ -87,7 +87,7 @@ export const ContextProvider = ({children}: any) => {
             await firebase.auth().sendPasswordResetEmail(email);
           } catch (e) {
             handleAuthError(e, (message: any) => {
-              Alert.alert('Synthia AI Chat', message);
+              Alert.alert('AI Monk', message);
             });
             return e;
           }

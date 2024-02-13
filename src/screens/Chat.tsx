@@ -6,7 +6,7 @@ import {
   Text,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {globalStyle} from '../styles/globalStyle';
+import Octicons from 'react-native-vector-icons/Octicons';
 import ChatHeader from '../components/ChatHeader';
 import {Bubble, GiftedChat, InputToolbar} from 'react-native-gifted-chat';
 import {getChatGPTResponse, imageArtGeneration} from '../configs';
@@ -158,7 +158,7 @@ const Chat = (props: any) => {
             _id: '2',
             name: 'ChatGPT',
             avatar:
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf_jxvmlHQ4r4ful-PsH6MRHOAm6T6sskKZQ&usqp=CAU',
+              'https://firebasestorage.googleapis.com/v0/b/synthiaaichatbot.appspot.com/o/AI_Monk_Content%2Fround_logo.png?alt=media&token=b8cf32d3-362a-4619-8656-fc1383aa95cf',
           },
         };
         await setMessages((previousMessages: any) =>
@@ -227,7 +227,7 @@ const Chat = (props: any) => {
   const renderInput = (props: any) => {
     return (
       <InputToolbar
-        textInputStyle={{color: '#fff'}}
+        textInputStyle={{color: COLORS.white}}
         {...props}
         containerStyle={styles.inputContainerStyle}
         renderActions={() => {
@@ -339,7 +339,12 @@ const Chat = (props: any) => {
             }}
           />
 
-          <Text style={styles.heading}>To</Text>
+          <Octicons
+            style={styles.heading}
+            name="arrow-switch"
+            size={16}
+            color={COLORS.white}
+          />
 
           <SelectDropdown
             data={initialLanguage}
@@ -392,7 +397,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: wp(3),
     borderTopRightRadius: wp(3),
     borderTopWidth: 0.8,
-    borderColor: '#181D2C',
+    borderColor: COLORS.borderColor,
   },
   emptyText: {
     fontSize: wp(4),
@@ -454,8 +459,6 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: COLORS.white,
-    fontFamily: FONT.notoSansMedium,
-    fontSize: hp(2),
     alignSelf: 'center',
   },
 });

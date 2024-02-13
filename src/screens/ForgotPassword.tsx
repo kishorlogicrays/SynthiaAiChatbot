@@ -40,10 +40,7 @@ const ForgotPassword = () => {
       isClick: true,
     });
     await sendResetLink(values?.email);
-    Alert.alert(
-      'Synthia AI Chat',
-      'Please check your email to reset your password.',
-    );
+    Alert.alert('AI Monk', 'Please check your email to reset your password.');
     setHandleToggle({
       loading: false,
       isClick: false,

@@ -27,7 +27,7 @@ const SubmitButton = ({
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        activeOpacity={0.7}
+        activeOpacity={0.8}
         disabled={isDisable}
         style={[
           styles.buttonStyles,

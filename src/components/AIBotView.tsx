@@ -16,6 +16,7 @@ const AIBotView = () => {
     <View style={styles.container}>
       {/* user Header */}
       <TouchableOpacity
+        activeOpacity={0.8}
         onPress={() => navigation?.navigate('Profile')}
         style={styles.imageContainer}>
         <Image

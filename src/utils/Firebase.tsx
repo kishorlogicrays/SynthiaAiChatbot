@@ -21,6 +21,20 @@ const TRANSLATE: string = 'translateChat';
 const MUSIC: string = 'musicChat';
 const MOVIES: string = 'moviesChat';
 
+const deleteLoop = [
+  USERS,
+  PROFILE,
+  CHAT,
+  ART,
+  CODE,
+  BOOKING,
+  CONTENT,
+  HEALTH,
+  TRANSLATE,
+  MUSIC,
+  MOVIES,
+];
+
 /**
  * Returns a user identifier as specified by the authentication provider.
  */
@@ -115,8 +129,50 @@ export const getUserData = async (userId: any) => {
     .collection(USERS)
     .doc(userId ? userId : currentUserId)
     .get();
-
   return userDetails;
+};
+
+export const deleteUser = async () => {
+  return new Promise(async (resolve: any, reject: any) => {
+    deleteUserData().then(() => {
+      firebaseAuth.currentUser
+        .delete()
+        .then(() => {
+          resolve();
+        })
+        .catch((err: any) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  });
+};
+
+export const deleteUserData = async () => {
+  return new Promise(async (resolve: any, reject: any) => {
+    try {
+      const currentUsers = await getAuthUserId();
+      deleteLoop.map(async (collection: any) => {
+        const singleDelete = await db
+          .collection(collection)
+          .doc(collection === 'users' ? currentUsers : `${currentUsers}-AI`);
+        await singleDelete.delete();
+        const querySnapshot = await singleDelete
+          .collection(`${currentUsers}-AI`)
+          .get();
+
+        const batch = db.batch();
+        querySnapshot.forEach((snapshot: any) => {
+          batch.delete(snapshot.ref);
+        });
+        await batch.commit();
+      });
+      resolve();
+    } catch (error) {
+      console.log('Error deleteUserData -', error);
+      reject(error);
+    }
+  });
 };
 
 export const storeChatCommunication = async (
@@ -270,15 +326,17 @@ export const createUser = async (userCollection: any, confirmation: any) => {
 
 export const updateUser = async (userDetails: any, userId: any) => {
   try {
-    const url: any = userDetails?.userImageUrl
-      ? await uploadImage(userId, userDetails?.userImageUrl)
-      : '';
+    var url;
+    if (userDetails?.userImageUrl?.includes('file://')) {
+      url = await uploadImage(userId, userDetails?.userImageUrl);
+    } else {
+      url = userDetails?.userImageUrl;
+    }
     const docRef = db.collection(USERS).doc(userId);
-    const res = await docRef.update(
-      url ? {...userDetails, userImageUrl: url} : userDetails,
-    );
+    const res = await docRef.update({...userDetails, userImageUrl: url});
     return res;
   } catch (error) {
+    console.log('Error for update profile  ---', error);
     return error;
   }
 };
@@ -341,8 +399,8 @@ export const logoutUser = () => {
  */
 PushNotification.createChannel(
   {
-    channelId: 'Synthia AI Chat',
-    channelName: 'Synthia AI Chat channel',
+    channelId: 'AI Monk',
+    channelName: 'AI Monk channel',
     channelDescription: 'A channel to categories your notifications',
     playSound: true,
     importance: 4,
@@ -379,7 +437,7 @@ export const localNotifications = (remoteMessage: any) => {
   const {notification, data, messageId} = remoteMessage;
 
   PushNotification.localNotification({
-    channelId: 'Synthia AI Chat',
+    channelId: 'AI Monk',
     largeIcon: '',
     smallIcon: notification?.android?.smallIcon,
     bigPictureUrl: notification.imageUrl,

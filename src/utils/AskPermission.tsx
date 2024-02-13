@@ -35,7 +35,7 @@ export const requestMicrophonePermission = async () => {
       return true;
     } else {
       Alert.alert(
-        'Sythia AI Chat',
+        'AI Monk',
         'We need micro phone permission for access to recorded audio.',
       );
     }
@@ -74,7 +74,7 @@ export const requestCameraPermission = async () => {
       return result;
     } else {
       Alert.alert(
-        'Sythia AI Chat',
+        'AI Monk',
         'We need camera permission for access to the capture images.',
       );
     }
@@ -114,7 +114,7 @@ export const requestStoragePermission = async () => {
       return result;
     } else {
       Alert.alert(
-        'Sythia AI Chat',
+        'AI Monk',
         'We need image and video permission for access to the store images and videos on storage.',
       );
     }
@@ -155,7 +155,7 @@ export const requestPushPermission = async () => {
       return result;
     } else {
       Alert.alert(
-        'Sythia AI Chat',
+        'AI Monk',
         'We need notification permission for send messages and other information.',
       );
     }

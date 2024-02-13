@@ -26,7 +26,7 @@ const Welcome = () => {
         <Text style={styles.headingText}>Our Intelligent Chat</Text>
         <Text style={[styles.headingText, {color: COLORS.pupal}]}>AI Monk</Text>
         <Text style={styles.childText}>
-          {`The future by here, powered by AI.\nSynthia AI understands you, providing tailored solutions and insights.`}
+          {`The future by here, powered by AI.\AI Monk understands you, providing tailored solutions and insights.`}
         </Text>
       </View>
 

@@ -33,6 +33,7 @@ const ChatInput = ({
         onChangeText={(data: any) => fillInput(data)}
       />
       <TouchableOpacity
+        activeOpacity={0.8}
         style={[styles.sendContainer, {marginStart: 5}]}
         onPress={onSubmitSearch}>
         <Ionicons name={'send'} color={COLORS.white} size={20} />
