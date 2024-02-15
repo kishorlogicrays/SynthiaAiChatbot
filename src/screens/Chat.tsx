@@ -4,6 +4,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Text,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -52,7 +54,8 @@ const Chat = (props: any) => {
   const [isOnMic, setIsOnMic] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
   const [firstLanguage, setFirstLanguage] = useState('English');
-  const [secondLanguage, setSecondLanguage] = useState('');
+  const [secondLanguage, setSecondLanguage] = useState('Hindi');
+  const [speechValue, setSpeechValue] = useState<string>('');
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackPress);
@@ -101,18 +104,7 @@ const Chat = (props: any) => {
   };
 
   const onSpeechResultsHandler = (e: any) => {
-    onSend([
-      {
-        _id: Math.random(),
-        createdAt: new Date(),
-        text: e.value[0],
-        user: {
-          _id: 1,
-          avatar: authUser?.userImageUrl,
-          name: authUser?.email,
-        },
-      },
-    ]);
+    setSpeechValue(e.value[0]);
   };
 
   const onSpeechErrorHandler = (e: any) => {
@@ -147,7 +139,6 @@ const Chat = (props: any) => {
                 firstLanguage,
                 secondLanguage,
               );
-
         const responseObject = {
           _id: Math.random(),
           ...(props?.route?.params?.aiType === 'Art' && {
@@ -174,6 +165,7 @@ const Chat = (props: any) => {
         );
         setIsTyping(false);
       }
+      setSpeechValue('');
       setIsTyping(false);
     },
     [secondLanguage],
@@ -321,7 +313,6 @@ const Chat = (props: any) => {
         title={props?.route?.params?.aiType ? props?.route?.params?.aiType : ''}
         shouldBackBtnVisible={props?.route?.params?.shouldBackBtnVisible}
       />
-
       {(props?.route?.params?.aiType === 'Translate' ||
         props?.route?.params?.aiType === 'Health') && (
         <View
@@ -357,6 +348,7 @@ const Chat = (props: any) => {
             dropdownStyle={{borderRadius: 10}}
             selectedRowTextStyle={styles.selectedRowTextStyle}
             buttonStyle={styles.buttonStyle}
+            defaultValueByIndex={5}
             buttonTextStyle={styles.buttonTextStyle}
             selectedRowStyle={styles.selectedRowStyle}
             defaultButtonText="Select language"
@@ -367,32 +359,36 @@ const Chat = (props: any) => {
           />
         </View>
       )}
-      <View style={styles.messageContainer}>
-        <GiftedChat
-          textInputRef={inputRef}
-          messages={messages}
-          user={{
-            _id: 1,
-            avatar: authUser?.userImageUrl,
-            name: authUser?.email,
-          }}
-          showUserAvatar={false}
-          alwaysShowSend={true}
-          isTyping={isTyping}
-          infiniteScroll={true}
-          inverted={messages?.length !== 0}
-          messagesContainerStyle={
-            messages?.length !== 0 ? null : {transform: [{scaleY: -1}]}
-          }
-          renderMessageImage={renderMessageImage}
-          scrollToBottom={true}
-          scrollToBottomComponent={customDownButton}
-          renderInputToolbar={(props: any) => renderInput(props)}
-          isLoadingEarlier={true}
-          renderChatEmpty={(props: any) => <RenderEmpty {...props} />}
-          renderBubble={(props: any) => <Bubbles {...props} />}
-        />
-      </View>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View style={styles.messageContainer}>
+          <GiftedChat
+            textInputRef={inputRef}
+            messages={messages}
+            user={{
+              _id: 1,
+              avatar: authUser?.userImageUrl,
+              name: authUser?.email,
+            }}
+            text={speechValue}
+            showUserAvatar={false}
+            alwaysShowSend={true}
+            isTyping={isTyping}
+            infiniteScroll={true}
+            inverted={messages?.length !== 0}
+            messagesContainerStyle={
+              messages?.length !== 0 ? null : {transform: [{scaleY: -1}]}
+            }
+            onInputTextChanged={data => setSpeechValue(data)}
+            renderMessageImage={renderMessageImage}
+            scrollToBottom={true}
+            scrollToBottomComponent={customDownButton}
+            renderInputToolbar={(props: any) => renderInput(props)}
+            isLoadingEarlier={true}
+            renderChatEmpty={(props: any) => <RenderEmpty {...props} />}
+            renderBubble={(props: any) => <Bubbles {...props} />}
+          />
+        </View>
+      </TouchableWithoutFeedback>
     </View>
   );
 };

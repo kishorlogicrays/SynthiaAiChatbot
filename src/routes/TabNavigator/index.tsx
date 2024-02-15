@@ -67,7 +67,6 @@ const TabNavigation = () => {
                           backgroundColor: COLORS.white,
                           padding: hp(1),
                           borderRadius: wp(2.5),
-                          width: wp(10),
                         }}
                       />
                     );
@@ -82,7 +81,7 @@ const TabNavigation = () => {
                           ? 'chatbubble-outline'
                           : 'person-outline'
                       }
-                      size={size}
+                      size={wp(6)}
                       color={color}
                     />
                   );
