@@ -34,8 +34,6 @@ const AIBotView = () => {
           {authUser?.fullName ? authUser?.fullName : 'User'}
         </Text>
       </TouchableOpacity>
-
-      <Text style={styles.greetingText}>{`How may i help\nyou today ?`}</Text>
       <TouchableOpacity
         style={styles.animation}
         activeOpacity={1}
@@ -52,6 +50,7 @@ const AIBotView = () => {
           style={styles.logoContainer}
         />
       </TouchableOpacity>
+      <Text style={styles.greetingText}>{`How may i help you today ?`}</Text>
     </View>
   );
 };
@@ -62,11 +61,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   greetingText: {
-    fontSize: wp(6),
-    fontFamily: FONT.notoSansBold,
+    fontSize: wp(4),
+    fontFamily: FONT.notoSansSemiBold,
     color: COLORS.lightWhite,
-    marginStart: wp(4),
-    marginTop: wp(2),
+    marginBottom: wp(4),
+    alignSelf: 'center',
   },
   animation: {padding: wp(5), alignItems: 'center'},
   logoContainer: {

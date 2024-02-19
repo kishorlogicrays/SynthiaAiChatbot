@@ -12,7 +12,9 @@ import {
 
 const App = () => {
   useEffect(() => {
-    SplashScreen.hide();
+    const timeOut = setTimeout(() => {
+      SplashScreen.hide();
+    }, 3000);
     IronSource.init(Platform?.OS === 'android' ? '1d7a9f555' : '1d7bad02d');
     InitEvent.onInitializationComplete.setListener(() => {
       console.log('onInitializationComplete');
@@ -21,6 +23,8 @@ const App = () => {
     IronSource.validateIntegration();
     IronSource.setAdaptersDebug(true);
     requestMultiplePermissions();
+
+    return () => clearTimeout(timeOut);
   }, []);
 
   return (

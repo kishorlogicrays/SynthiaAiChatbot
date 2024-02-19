@@ -3,9 +3,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Text,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -274,7 +271,7 @@ const Chat = (props: any) => {
     );
   };
 
-  const Bubbles = (props: any) => {
+  const Bubbles = useCallback((props: any) => {
     return (
       <Bubble
         {...props}
@@ -300,12 +297,12 @@ const Chat = (props: any) => {
         }}
       />
     );
-  };
+  }, []);
 
-  const renderMessageImage = (props: any) => {
+  const renderMessageImage = useCallback((props: any) => {
     const {currentMessage} = props;
     return <ZoomImage imageUri={currentMessage.image} />;
-  };
+  }, []);
 
   return (
     <View style={styles.mainContainer}>
@@ -359,36 +356,34 @@ const Chat = (props: any) => {
           />
         </View>
       )}
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.messageContainer}>
-          <GiftedChat
-            textInputRef={inputRef}
-            messages={messages}
-            user={{
-              _id: 1,
-              avatar: authUser?.userImageUrl,
-              name: authUser?.email,
-            }}
-            text={speechValue}
-            showUserAvatar={false}
-            alwaysShowSend={true}
-            isTyping={isTyping}
-            infiniteScroll={true}
-            inverted={messages?.length !== 0}
-            messagesContainerStyle={
-              messages?.length !== 0 ? null : {transform: [{scaleY: -1}]}
-            }
-            onInputTextChanged={data => setSpeechValue(data)}
-            renderMessageImage={renderMessageImage}
-            scrollToBottom={true}
-            scrollToBottomComponent={customDownButton}
-            renderInputToolbar={(props: any) => renderInput(props)}
-            isLoadingEarlier={true}
-            renderChatEmpty={(props: any) => <RenderEmpty {...props} />}
-            renderBubble={(props: any) => <Bubbles {...props} />}
-          />
-        </View>
-      </TouchableWithoutFeedback>
+      <View style={styles.messageContainer}>
+        <GiftedChat
+          textInputRef={inputRef}
+          messages={messages}
+          user={{
+            _id: 1,
+            avatar: authUser?.userImageUrl,
+            name: authUser?.email,
+          }}
+          text={speechValue}
+          showUserAvatar={false}
+          alwaysShowSend={true}
+          isTyping={isTyping}
+          infiniteScroll={true}
+          inverted={messages?.length !== 0}
+          messagesContainerStyle={
+            messages?.length !== 0 ? null : {transform: [{scaleY: -1}]}
+          }
+          onInputTextChanged={data => setSpeechValue(data)}
+          renderMessageImage={renderMessageImage}
+          scrollToBottom={true}
+          scrollToBottomComponent={customDownButton}
+          renderInputToolbar={(props: any) => renderInput(props)}
+          renderChatEmpty={(props: any) => <RenderEmpty {...props} />}
+          renderBubble={(props: any) => <Bubbles {...props} />}
+          keyboardShouldPersistTaps={'handled'}
+        />
+      </View>
     </View>
   );
 };

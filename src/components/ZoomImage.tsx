@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   Modal,
   TouchableOpacity,
@@ -25,6 +24,7 @@ const ZoomImage = ({imageUri}: IZoomImage) => {
   const [isOpenImageView, setIsOpenImageView] = useState(false);
   const [valid, setValid] = useState(true);
   const [loadingImage, setLoadingImage] = useState(true);
+  const [isError, setIsError] = useState(false);
   const noImageUri =
     'https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg';
 
@@ -61,13 +61,16 @@ const ZoomImage = ({imageUri}: IZoomImage) => {
       )}
 
       <ImageBackground
-        onError={() => setValid(false)}
+        onError={e => {
+          setValid(false);
+          e?.nativeEvent?.error && setIsError(true);
+        }}
         style={[
           styles.chatPhotoContainer,
           {height: '100%', width: '100%', position: 'relative'},
         ]}
         imageStyle={{borderRadius: 10}}
-        source={{uri: imageUri ? imageUri : noImageUri, cache: 'force-cache'}}
+        source={{uri: !isError ? imageUri : noImageUri, cache: 'force-cache'}}
         resizeMode={'cover'}
         resizeMethod={'resize'}
         onLoadEnd={() => setLoadingImage(false)}
@@ -99,4 +102,4 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 });
-export default ZoomImage;
+export default React.memo(ZoomImage);
