@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -11,7 +11,12 @@ import {RewardedVideo} from '../utils/IronSource';
 import useAppContext from '../context/useAppContext';
 import {SvgIcon} from '../utils/SvgIcon';
 
-const ChatHeader = ({title, shouldBackBtnVisible}: any) => {
+const ChatHeader = ({
+  title,
+  shouldBackBtnVisible,
+  messageLength,
+  clearChat,
+}: any) => {
   const {adsDetails}: any = useAppContext();
   const navigation = useNavigation();
   return (
@@ -38,13 +43,27 @@ const ChatHeader = ({title, shouldBackBtnVisible}: any) => {
         </Text>
       </View>
       <View style={styles.backContainer}>
-        {/* <TouchableOpacity>
-          <Ionicons
-            name="ellipsis-horizontal-circle"
-            color={COLORS.white}
-            size={hp(3.8)}
-          />
-        </TouchableOpacity> */}
+        {messageLength > 0 && (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() =>
+              Alert.alert(
+                'AI Monk',
+                `Are you sure you want to clear AI Monk ${title} Chat?`,
+                [
+                  {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+                  {
+                    text: 'DELETE',
+                    onPress: () => clearChat(),
+                    style: 'default',
+                  },
+                ],
+                {cancelable: false},
+              )
+            }>
+            <Text style={styles.clearText}>Clear</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -71,6 +90,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  clearText: {
+    color: COLORS.danger,
+    fontFamily: FONT.notoSansBold,
+    fontSize: hp(2),
   },
 });
 

@@ -24,6 +24,7 @@ const AIBotView = () => {
             authUser?.userImageUrl
               ? {
                   uri: authUser?.userImageUrl,
+                  cache: 'force-cache',
                 }
               : images.userLogo
           }

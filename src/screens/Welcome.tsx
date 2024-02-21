@@ -8,7 +8,7 @@ import {storeValueInAsync} from '../utils/AsyncStorage';
 import {SvgIcon} from '../utils/SvgIcon';
 
 const Welcome = () => {
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
 
   return (
     <View style={[globalStyle.container, styles.container]}>

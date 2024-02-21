@@ -138,7 +138,11 @@ const SignUp = () => {
           <View style={styles.photoContainer}>
             <View style={styles.imageViewContainer}>
               <Image
-                source={profileImage ? {uri: profileImage} : images.userLogo}
+                source={
+                  profileImage
+                    ? {uri: profileImage, cache: 'force-cache'}
+                    : images.userLogo
+                }
                 resizeMode="cover"
                 style={styles.image}
               />

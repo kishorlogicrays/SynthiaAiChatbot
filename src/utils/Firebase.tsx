@@ -148,6 +148,33 @@ export const deleteUser = async () => {
   });
 };
 
+export const deleteChat = async (collection: string) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const currentUsers = await getAuthUserId();
+      const singleDelete = await db
+        .collection(`${collection}Chat`)
+        .doc(`${currentUsers}-AI`);
+      await singleDelete.delete();
+      const querySnapshot = await singleDelete
+        .collection(`${currentUsers}-AI`)
+        .get();
+      const batch = db.batch();
+      querySnapshot.forEach((snapshot: any) => {
+        batch.delete(snapshot.ref);
+      });
+      await batch.commit();
+      resolve(true);
+    } catch (error) {
+      console.log('Error deleteUserData -', error);
+      handleAuthError(error, (message: any) => {
+        Alert.alert('AI Monk', message);
+      });
+      reject(error);
+    }
+  });
+};
+
 export const deleteUserData = async () => {
   return new Promise(async (resolve: any, reject: any) => {
     try {

@@ -22,6 +22,8 @@ import useAppContext from '../context/useAppContext';
 import {BackHandler} from 'react-native';
 import {RewardedVideo} from '../utils/IronSource';
 import ZoomImage from '../components/ZoomImage';
+import {deleteChat} from '../utils/Firebase';
+import Spinner from '../utils/LoadingOverlays';
 
 const initialLanguage = [
   'English',
@@ -53,6 +55,7 @@ const Chat = (props: any) => {
   const [firstLanguage, setFirstLanguage] = useState('English');
   const [secondLanguage, setSecondLanguage] = useState('Hindi');
   const [speechValue, setSpeechValue] = useState<string>('');
+  const [spinner, setSpinner] = useState(false);
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackPress);
@@ -66,21 +69,22 @@ const Chat = (props: any) => {
     return false;
   };
 
+  const fetchMessages = async () => {
+    setIsLoader(true);
+    const chatData = await getChatCollectionData(
+      props?.route?.params?.aiType
+        ? props?.route?.params?.aiType
+        : 'generalChat',
+    );
+    chatData?.map((singleChat: any) => {
+      singleChat.createdAt = JSON.parse(singleChat.createdAt);
+    });
+    setMessages(chatData);
+    setIsLoader(false);
+  };
+
   useEffect(() => {
-    const data = async () => {
-      setIsLoader(true);
-      const chatData = await getChatCollectionData(
-        props?.route?.params?.aiType
-          ? props?.route?.params?.aiType
-          : 'generalChat',
-      );
-      chatData?.map((singleChat: any) => {
-        singleChat.createdAt = JSON.parse(singleChat.createdAt);
-      });
-      setMessages(chatData);
-      setIsLoader(false);
-    };
-    data();
+    fetchMessages();
   }, []);
 
   useEffect(() => {
@@ -93,6 +97,25 @@ const Chat = (props: any) => {
       Voice.destroy().then(() => Voice.removeAllListeners());
     };
   }, []);
+
+  const deleteSingleChat = async () => {
+    setSpinner(true);
+    try {
+      await deleteChat(
+        props?.route?.params?.aiType
+          ? props?.route?.params?.aiType.toLowerCase()
+          : 'general',
+      ).then(confirmation => {
+        if (confirmation) {
+          fetchMessages();
+          setSpinner(false);
+        }
+      });
+    } catch (error) {
+      setSpinner(false);
+      console.log('Error delete single chat on chat screen :', error);
+    }
+  };
 
   const onSpeechStartHandler = (e: any) => {};
 
@@ -306,9 +329,12 @@ const Chat = (props: any) => {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={spinner} textContent={'Loading...'} />
       <ChatHeader
         title={props?.route?.params?.aiType ? props?.route?.params?.aiType : ''}
         shouldBackBtnVisible={props?.route?.params?.shouldBackBtnVisible}
+        messageLength={messages?.length}
+        clearChat={deleteSingleChat}
       />
       {(props?.route?.params?.aiType === 'Translate' ||
         props?.route?.params?.aiType === 'Health') && (

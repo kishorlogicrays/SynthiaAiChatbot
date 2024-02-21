@@ -67,7 +67,7 @@ const Profile = () => {
     });
     Alert.alert(
       'AI Monk',
-      'Details Udpated successfully',
+      'Details Updated successfully',
       [
         {
           text: 'Ok',
@@ -112,7 +112,7 @@ const Profile = () => {
 
   const logoutAction = () => {
     Alert.alert(
-      'Log out',
+      'AI Monk',
       'Are you sure you want to Logout?',
       [
         {text: 'Cancel', onPress: () => {}, style: 'cancel'},
@@ -139,7 +139,7 @@ const Profile = () => {
 
   const deleteAction = () => {
     Alert.alert(
-      'Delete Account!',
+      'AI Monk',
       'Are you sure you want delete the account?',
       [
         {text: 'Cancel', onPress: () => {}, style: 'cancel'},
@@ -205,7 +205,11 @@ const Profile = () => {
           <View style={styles.platContainer}>
             <View style={styles.photoContainer}>
               <Image
-                source={profileImage ? {uri: profileImage} : images.userLogo}
+                source={
+                  profileImage
+                    ? {uri: profileImage, cache: 'force-cache'}
+                    : images.userLogo
+                }
                 resizeMode="cover"
                 style={styles.image}
               />
